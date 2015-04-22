@@ -38,6 +38,7 @@ window.app = (function() {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents = function() {
         document.addEventListener('deviceready', onDeviceReady, false);
+        document.getElementById('searchButton').addEventListener('click', navigateToSearch);
     };
 
     // deviceready Event Handler
@@ -47,6 +48,10 @@ window.app = (function() {
     onDeviceReady = function() {
         var mapHandle = map.newMap();
         mapHandle.render("map_canvas");
+    };
+
+    navigateToSearch = function() {
+        window.location = "search.html";
     };
 
     return {

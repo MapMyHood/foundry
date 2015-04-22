@@ -54,6 +54,12 @@ footer {
     height:100%;
 }
 
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    padding: 10px;
+}
+
 header > nav {
     display: inline-block;
 }
