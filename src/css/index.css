@@ -59,7 +59,15 @@ footer {
     height: 20px;
     padding: 10px;
 }
-
+.panel-map {
+    display: block;
+}
+.panel-list {
+    display: none;
+}
+.panel-search {
+    display: none;
+}
 header > nav {
     display: inline-block;
 }

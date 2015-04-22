@@ -51,7 +51,10 @@ window.app = (function() {
     };
 
     navigateToSearch = function() {
-        window.location = "search.html";
+        alert("Show search pane");
+        document.getElementById('mapPanel').style.display = 'none';
+        document.getElementById('listPanel').style.display = 'none';
+        document.getElementById('searchPanel').style.display = 'block';
     };
 
     return {
