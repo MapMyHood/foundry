@@ -15,11 +15,7 @@ module.exports = (function() {
             var mapElem = document.getElementById(selector),
                 map = plugin.google.maps.Map.getMap();
 
-                alert("map rendered");
-
-            // Initialize the map view
-            map.getMyLocation(function(location) {
-
+            map.setDiv(mapElem);
                 var latLng = new plugin.google.maps.LatLng(
                     location.latLng.lat,
                     location.latLng.lng
@@ -36,7 +32,14 @@ module.exports = (function() {
                     }
                 });
 
-                map.setDiv(mapElem);
+
+            // Initialize the map view
+            map.getMyLocation(function(location) {
+
+                alert("getting location");
+
+                
+                
             });
 
         };
