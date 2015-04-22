@@ -17,18 +17,37 @@
  * under the License.
  */
 
-var location = require("./location");
-var map = require("./map");
+var map      = require("./map"),
+    model    = require("./model"),
+    dot      = require("./lib/dot");
 
 window.app = (function() {
 
     var initialize,
         bindEvents,
         onDeviceReady,
-        render;
+        togglePanel,
+        render,
+        template,
+        panelMap = document.querySelector("section.panel.panel-map"),
+        panelList = document.querySelector("section.panel.panel-list");
+
+    // list template
+    template = dot.template("<ul>{{~it.resultSet :value:index}}<li>{{=value.headline}}!</li>{{~}}</ul>");
+
+    render = function (data) {
+        panelList.innerHTML = template(data);
+    };
+
+    togglePanel = function () {
+        panelMap.classList.toggle("hidden");
+        panelList.classList.toggle("hidden");
+    };
 
     // Application Constructor
     initialize = function() {
+        panelMap.style.height = (window.innerHeight - 60) + 'px';
+        panelList.style.height = (window.innerHeight - 60) + 'px';
         bindEvents();
     };
 
@@ -37,11 +56,20 @@ window.app = (function() {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents = function() {
+
+        var btnToggle   = document.querySelector("button.btn-toggle"),
+            btnSettings = document.querySelector("button.btn-settings"),
+            btnSearch   = document.querySelector("button.btn-search"),
+            btnNews     = document.querySelector("button.btn-news"),
+            btnAlerts   = document.querySelector("button.btn-alerts"),
+            btnOffers   = document.querySelector("button.btn-offers");
+
         document.addEventListener('deviceready', onDeviceReady, false);
-        document.getElementById('searchButton').addEventListener('click', showSearch);
-        document.getElementById('mapButton').addEventListener('click', showMap);
-        document.getElementById('listButton').addEventListener('click', showList);
-        document.getElementById('settingsButton').addEventListener('click', showSettings);
+
+        btnToggle.addEventListener("touchstart", function () {
+            togglePanel();
+        }, false);
+
     };
 
     // deviceready Event Handler
@@ -51,6 +79,8 @@ window.app = (function() {
     onDeviceReady = function() {
         var mapHandle = map.newMap();
         mapHandle.render("map_canvas");
+
+        render(model);
     };
 
     showSearch = function() {

@@ -34,9 +34,26 @@ input
     user-select: auto !important;
 }
 
+@font-face {
+  font-family: 'Roboto Condensed';
+  src: url('fonts/RobotoCondensed-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Icon Moon';
+  src: url('fonts/IcoMoon-free.ttf') format('truetype');
+}
+
+p,
+ul,
+li {
+    padding: 0;
+    margin: 0;
+}
+
 html {
-    height: 100%;
-    width: 100%;
+    margin-top: 20px;
+    background: #EEE;
 }
 
 body {
@@ -44,24 +61,76 @@ body {
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
     background-color:#E4E4E4;
-    font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
-    font-size:12px;
+    font-family: 'Roboto Condensed', Helvetica, Arial, sans-serif;
+    text-rendering: optimizeLegibility;
+    font-size: 15px;
+    line-height: 1.5;
     height:100%;
     margin:0px;
     padding:0px;
-    text-transform:uppercase;
     width:100%;
 }
 
+.hidden {
+    display: none;
+}
+
 header {
-    height: 50px;
+    height: 60px;
     width: 100%;
-    background: yellow
+    background: #c0392b;
+    position: relative;
+}
+header h1 {
+    display: block;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 0;
+}
+header > button.btn {
+    position: absolute;
+    top: 5px;
+    z-index: 2;
+}
+header > button.btn-settings {
+    right: 5px;
+}
+header > button.btn-search {
+    left: 5px;
+}
+header > button.btn-toggle {
+    left: 60px;
+}
+section.panel {
+    width: 100%;
+    position: absolute;
+    transform: translate3d( 0, 0, 1px );
+}
+section.panel.hidden {
+    transform: translate3d( -100%, 0, 0 );
 }
 footer {
-    height: 80px;
-    background: blue;
+    padding: 5px;
+    width: 200px;
+    position: fixed;
+    margin: 0 auto;
+    left: 50%;
+    margin-left: -100px;
+    bottom: 10px;
+    text-align: center;
+}
+button {
+    display: inline-block;
+    background: #FFF;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    border: none;
+}
+button > img {
     width: 100%;
+    height: auto;
 }
 #map_canvas {
     width:100%;
@@ -102,9 +171,19 @@ footer ul, footer li {
     padding; 0;
     margin: 0;
 }
-button {
-    display: inline-block;
-    border: 1px solid #CCC;
-    background: #EEE;
-    color: #444;
+footer ul {
+    display: flex;
+    padding: 0;
+    justify-content: space-around;
+}
+footer ul li button {
+    background: #FFF;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+section.panel-list ul li {
+    width: 100%;
+    min-height: 50px;
+    background: #FFF;
+    border-bottom: 1px solid #CCC;
 }

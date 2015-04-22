@@ -25,27 +25,30 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link href="css/open-iconic.min.css" rel="stylesheet" type="text/css" />
         <link href="css/index.css" rel="stylesheet" type="text/css" />
-        
         <title>Hello World</title>
     </head>
     <body>
         <header>
-            <input id="searchButton" class="btn btn-icon btn-search" type="image" src="img/open-iconic/magnifying-glass.svg" alt="search" />
-            <nav class="toggle">
-                <input id="mapButton" class="btn btn-icon btn-map" type="image" src="img/open-iconic/map.svg" alt="map" />
-                <input id="listButton" class="btn btn-icon btn-list" type="image" src="img/open-iconic/list.svg" alt="list" />
-            </nav>
-            <input id="settingsButton" class="btn btn-icon btn-settings" type="image" src="img/open-iconic/cog.svg" alt="settings" />
+            <button class="btn btn-search">
+                <img src="img/svg/magnifying-glass.svg" />
+            </button>
+            <button class="btn btn-toggle">
+                <img src="img/svg/map-marker.svg" />
+                <img src="img/svg/list.svg" class="hidden" />
+            </button>
+            <h1>MapMyHood</h1>
+            <button class="btn btn-settings">
+                <img src="img/svg/cog.svg" />
+            </button>
         </header>
         
-        <section id="mapPanel" class="panel panel-map" style="width:100%; height: 85%;">
-            <div id="map_canvas"></div>
+        <section class="panel panel-map">
         </section>
-
-        <section id="listPanel" class="panel panel-list" style="width:100%; height: 85%;">
-            <ul><li>List</li></ul>
+        <section class="panel panel-list hidden">
+            <ul></ul>
         </section>
 
         <section id="searchPanel" class="panel panel-search" style="width:100%; height: 85%;">
@@ -77,13 +80,23 @@
         <footer>
             <nav>
                 <ul>
-                    <li><input id="newsButton" class="btn btn-icon btn-news" type="image" src="img/open-iconic/rss-alt.svg" alt="news" /></li>
-                    <li><input id="updatesButton" class="btn btn-icon btn-updates" type="image" src="img/open-iconic/fire.svg" alt="updates" /></li>
-                    <li><input id="socialButton" class="btn btn-icon btn-social" type="image" src="img/open-iconic/people.svg" alt="social" /></li>
-                    <li><input id="offersButton" class="btn btn-icon btn-offers" type="image" src="img/open-iconic/dollar.svg" alt="offers" /></li>
-                </ul> 
+                    <li><button class="btn btn-news">
+                         <img src="img/svg/script.svg" />
+                    </button></li>
+                    <li><button class="btn btn-updates"> <img src="img/svg/warning.svg" /></button></li>
+                    <li><button class="btn btn-offers">
+                         <img src="img/svg/dollar.svg" />
+                    </li>
+                </ul>   
             </nav>
         </footer>
+
+        <script>
+            (function () {
+                var elem = document.querySelector("section.panel-map");
+                    elem.innerHTML = '<div id="map_canvas" style="width:100%; height:'+(window.innerHeight-60)+'px"></div>'
+            }());
+        </script>
 
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
