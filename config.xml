@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="au.com.news.mapmyhood" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
-    <name>Hello World</name>
+    <name>MapMyHood</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        MapMyHood is your selection of HyperLocal information
     </description>
-    <author email="support@phonegap.com" href="http://phonegap.com">
-        PhoneGap Team
+    <author email="engineering@news.com.au" href="http://www.news.com.au">
+        Team MapMyHood
     </author>
     <content src="index.html" />
     <preference name="permissions" value="none" />
