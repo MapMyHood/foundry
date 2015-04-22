@@ -19,10 +19,9 @@
  */
 
 var location = require("./location");
+var map = require("./map");
 
 window.app = (function() {
-
-    alert("Code running");
 
     var initialize,
         bindEvents,
@@ -31,7 +30,6 @@ window.app = (function() {
 
     // Application Constructor
     initialize = function() {
-        alert("init");
         bindEvents();
     };
 
@@ -40,7 +38,6 @@ window.app = (function() {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents = function() {
-        alert("Bind events");
         document.addEventListener('deviceready', onDeviceReady, false);
     };
 
@@ -49,30 +46,8 @@ window.app = (function() {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady = function() {
-        alert("R1 ender running");
-        location.getUsersLocation(render);
-    };
-
-    render = function(position) {
-
-        alert("Render running");
-
-        var mapElem = document.getElementById("map");
-
-        // full size of screen
-        mapElem.style.width = window.innerWidth + "px";
-        mapElem.style.height = (window.innerHeight - 140) + "px";
-
-        // this is where the custom code will go for each mapping implementation
-            var mapOptions = {
-                center: {
-                    lat: -34.397,
-                    lng: 150.644
-                },
-                zoom: 8
-            };
-            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    
+        var mapHandle = map.newMap();
+        mapHandle.render("map_canvas");
     };
 
     return {
@@ -80,7 +55,7 @@ window.app = (function() {
     };
 
 }());
-},{"./location":2}],2:[function(require,module,exports){
+},{"./location":2,"./map":3}],2:[function(require,module,exports){
 module.exports = (function () {
 
     var getUsersLocation,
@@ -90,28 +65,16 @@ module.exports = (function () {
     // onSuccess Geolocation
     //
     onSuccess = function (position) {
-        var element = document.getElementById('geolocation');
-        element.innerHTML = 'Latitude: '           + position.coords.latitude              + '<br />' +
-                            'Longitude: '          + position.coords.longitude             + '<br />' +
-                            'Altitude: '           + position.coords.altitude              + '<br />' +
-                            'Accuracy: '           + position.coords.accuracy              + '<br />' +
-                            'Altitude Accuracy: '  + position.coords.altitudeAccuracy      + '<br />' +
-                            'Heading: '            + position.coords.heading               + '<br />' +
-                            'Speed: '              + position.coords.speed                 + '<br />' +
-                            'Timestamp: '          + position.timestamp                    + '<br />';
     };
 
     // onError Callback receives a PositionError object
     //
     onError = function (error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
     };
 
     getUsersLocation = function (callback) {
 
-        alert("Get users location..");
-
+        alert("get users location");
         navigator.geolocation.getCurrentPosition(function (position) {
             callback(position);
             onSuccess(position);
@@ -128,12 +91,43 @@ module.exports = (function () {
 }());
 
 },{}],3:[function(require,module,exports){
-module.exports = (function () {
+module.exports = (function() {
 
     var newMap;
 
-    newMap = function () {
+    newMap = function() {
 
+        var render;
+
+        render = function(selector) {
+
+            var mapElem = document.getElementById(selector),
+                map = plugin.google.maps.Map.getMap();
+
+            // Initialize the map view
+            map.getMyLocation(function(location) {
+
+                var latLng = new plugin.google.maps.LatLng(
+                    location.latLng.lat,
+                    location.latLng.lng
+                );
+
+                alert("Setting location" + JSON.stringify(latLng));
+
+                map.setOptions({
+                    'camera': {
+                        'latLng': latLng,
+                        'zoom': 16
+                    }
+                });
+
+                map.setDiv(mapElem);
+            });
+        };
+
+        return {
+            render: render
+        };
     };
 
     return {
@@ -141,5 +135,4 @@ module.exports = (function () {
     };
 
 }());
-
 },{}]},{},[1,2,3]);

@@ -18,6 +18,7 @@
  */
 
 var location = require("./location");
+var map = require("./map");
 
 window.app = (function() {
 
@@ -44,26 +45,8 @@ window.app = (function() {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady = function() {
-        location.getUsersLocation(render);
-    };
-
-    render = function(position) {
-        var mapElem = document.getElementById("map");
-
-        // full size of screen
-        mapElem.style.width = window.innerWidth + "px";
-        mapElem.style.height = (window.innerHeight - 140) + "px";
-
-        // this is where the custom code will go for each mapping implementation
-            var mapOptions = {
-                center: {
-                    lat: -34.397,
-                    lng: 150.644
-                },
-                zoom: 8
-            };
-            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    
+        var mapHandle = map.newMap();
+        mapHandle.render("map_canvas");
     };
 
     return {
