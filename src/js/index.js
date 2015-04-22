@@ -119,36 +119,6 @@ window.app = (function() {
         render(model);
     };
 
-    /*
-        showSearch = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'block';
-        document.getElementById('settingsPanel').style.display = 'none';                
-    };
-
-    showMap = function() {
-        document.getElementById('mapPanel').style.display = 'block';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'none';                
-    };
-
-    showList = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'block';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'none';        
-    };
-
-    showSettings = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'block';
-    };
-    */
-
     return {
         initialize: initialize
     };
