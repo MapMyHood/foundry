@@ -49,6 +49,9 @@ window.app = (function() {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady = function() {
+
+        // make sure status bar is usable
+        
         var mapHandle = map.newMap();
         mapHandle.render("map_canvas");
     };

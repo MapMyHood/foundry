@@ -25,7 +25,8 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
-        <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link href="css/open-iconic.min.css" rel="stylesheet" type="text/css" />
         <link href="css/index.css" rel="stylesheet" type="text/css" />
         
         <title>Hello World</title>
@@ -37,11 +38,12 @@
                 <input id="mapButton" class="btn btn-icon btn-map" type="image" src="img/open-iconic/map.svg" alt="map" />
                 <input id="listButton" class="btn btn-icon btn-list" type="image" src="img/open-iconic/list.svg" alt="list" />
             </nav>
-            <input id="settingsButton" class="btn btn-icon btn-settings" type="image" src="img/open-iconic/cog.svg" alt="settings" />
+            <h1>MapMyHood</h1>
+            <button class="btn btn-settings">Settings</button>
         </header>
         
-        <section id="mapPanel" class="panel panel-map" style="width:100%; height: 85%;">
-            <div id="map_canvas"></div>
+        <section class="panel panel-map">
+            <div id="map_canvas" style="width:100%; height:320px"></div>
         </section>
 
         <section id="listPanel" class="panel panel-list" style="width:100%; height: 85%;">
@@ -59,10 +61,9 @@
         <footer>
             <nav>
                 <ul>
-                    <li><input id="newsButton" class="btn btn-icon btn-news" type="image" src="img/open-iconic/rss-alt.svg" alt="news" /></li>
-                    <li><input id="updatesButton" class="btn btn-icon btn-updates" type="image" src="img/open-iconic/fire.svg" alt="updates" /></li>
-                    <li><input id="socialButton" class="btn btn-icon btn-social" type="image" src="img/open-iconic/people.svg" alt="social" /></li>
-                    <li><input id="offersButton" class="btn btn-icon btn-offers" type="image" src="img/open-iconic/dollar.svg" alt="offers" /></li>
+                    <li><button class="btn btn-news">News</button></li>
+                    <li><button class="btn btn-updates">Alerts</button></li>
+                    <li><button class="btn btn-offers">Offers</li>
                 </ul>   
             </nav>
         </footer>

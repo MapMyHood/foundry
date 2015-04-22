@@ -21,8 +21,8 @@
 }
 
 html {
-    height: 100%;
-    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    margin-top: 20px;
 }
 
 body {
@@ -45,9 +45,12 @@ header {
     background: yellow
 }
 footer {
-    height: 80px;
+    height: 50px;
     background: blue;
     width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
 }
 #map_canvas {
     width:100%;
