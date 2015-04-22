@@ -11,36 +11,31 @@ module.exports = (function() {
 
         render = function(selector) {
 
+            alert("Render map");
 
             var mapElem = document.getElementById(selector),
                 map = plugin.google.maps.Map.getMap();
 
             map.setDiv(mapElem);
-                var latLng = new plugin.google.maps.LatLng(
-                    location.latLng.lat,
-                    location.latLng.lng
-                );
+            /*var latLng = new plugin.google.maps.LatLng(
+                location.latLng.lat,
+                location.latLng.lng
+            );*/
 
-                map.setOptions({
-                    'backgroundColor': 'white',
-                    'controls': {
-                        'zoom': true // Only for Android
-                    },
-                    'camera': {
-                        'latLng': latLng,
-                        'zoom': 16
-                    }
-                });
+            map.setOptions({
+                'backgroundColor': 'white',
+                'camera': {
+                    'zoom': 16
+                }
+            });
 
 
             // Initialize the map view
-            map.getMyLocation(function(location) {
+            /*map.getMyLocation(function(location) {
 
                 alert("getting location");
 
-                
-                
-            });
+            });*/
 
         };
 

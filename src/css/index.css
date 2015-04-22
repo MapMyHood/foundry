@@ -44,6 +44,9 @@ input
   src: url('fonts/IcoMoon-free.ttf') format('truetype');
 }
 
+html {
+    margin-top: 20px;
+}
 
 body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
@@ -51,13 +54,19 @@ body {
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
 }
 
+/* Fix for status bar */
+header.bar-nav {
+    top: 20px !important;
+}
 section.panel {
     width: 100%;
+    top: 64px;
+    left: 0;
     position: absolute;
-    transform: translate3d( 0, 0, 1px );
 }
 section.panel.hidden {
-    transform: translate3d( -100%, 0, 0 );
+    display: none;
+    visibility: hidden;
 }
 section.panel-map {
     background: green;

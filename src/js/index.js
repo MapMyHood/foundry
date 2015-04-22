@@ -26,9 +26,12 @@ window.app = (function() {
     var initialize,
         bindEvents,
         onDeviceReady,
+        toggleMapView,
         togglePanel,
         render,
+        displayStack =[],
         template,
+        panels = document.querySelectorAll("section.panel"),
         panelMap = document.querySelector("section.panel.panel-map"),
         panelList = document.querySelector("section.panel.panel-list");
 
@@ -39,15 +42,40 @@ window.app = (function() {
         panelList.innerHTML = template(data);
     };
 
-    togglePanel = function () {
+    toggleMapView = function () {
         panelMap.classList.toggle("hidden");
         panelList.classList.toggle("hidden");
     };
 
+    togglePanel = function (name) {
+        var panels = document.querySelectorAll("section.panel"),
+            targetPanel = document.querySelector("section.panel-" + name),
+            len = panels.length;
+
+        // keep last active panel
+        displayStack.push(document.querySelector("section.panel:not(.hidden)"));
+
+        if (targetPanel.classList.contains("hidden")) {
+            while (len--) {
+                panels[len].classList.add("hidden");
+            }
+            targetPanel.classList.remove("hidden");
+        } else {
+            targetPanel.classList.add("hidden");
+            displayStack.pop().classList.remove("hidden");
+        }
+        
+    };
+
     // Application Constructor
     initialize = function() {
-        panelMap.style.height = (window.innerHeight - 60) + 'px';
-        panelList.style.height = (window.innerHeight - 60) + 'px';
+        var panels = document.querySelectorAll("section.panel"),    
+            len = panels.length;
+
+        while (len--) {
+            panels[len].style.height = (window.innerHeight - 64) + 'px';
+        }
+
         bindEvents();
     };
 
@@ -67,7 +95,15 @@ window.app = (function() {
         document.addEventListener('deviceready', onDeviceReady, false);
 
         btnToggle.addEventListener("touchstart", function () {
-            togglePanel();
+            toggleMapView('');
+        }, false);
+
+        btnSettings.addEventListener("touchstart", function () {
+            togglePanel('settings');
+        }, false);
+
+        btnSearch.addEventListener("touchstart", function () {
+            togglePanel('search');
         }, false);
 
     };
@@ -83,7 +119,8 @@ window.app = (function() {
         render(model);
     };
 
-    showSearch = function() {
+    /*
+        showSearch = function() {
         document.getElementById('mapPanel').style.display = 'none';
         document.getElementById('listPanel').style.display = 'none';
         document.getElementById('searchPanel').style.display = 'block';
@@ -110,6 +147,7 @@ window.app = (function() {
         document.getElementById('searchPanel').style.display = 'none';
         document.getElementById('settingsPanel').style.display = 'block';
     };
+    */
 
     return {
         initialize: initialize
