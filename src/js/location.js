@@ -16,7 +16,6 @@ module.exports = (function () {
 
     getUsersLocation = function (callback) {
 
-        alert("get users location");
         navigator.geolocation.getCurrentPosition(function (position) {
             callback(position);
             onSuccess(position);
