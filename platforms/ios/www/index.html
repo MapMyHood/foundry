@@ -26,10 +26,11 @@
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <link href="css/index.css" rel="stylesheet" type="text/css" />
         <title>Hello World</title>
     </head>
     <body>
+<<<<<<< HEAD
         <div class="app">
             <h1>PhoneGap</h1>
             <div id="deviceready" class="blink">
@@ -37,6 +38,34 @@
                 <p class="event received">Nick's Device is Ready</p>
             </div>
         </div>
+=======
+        <header>
+            <button class="btn btn-search">Search</button>
+            <nav class="toggle">
+                <button class="btn btn-map">Map</button>
+                <button class="btn btn-list">List</button>
+            </nav>
+            <button class="btn btn-settings">Settings</button>
+        </header>
+        
+        <section class="panel panel-map">
+            <div id="map"></div>
+        </section>
+        <section class="panel panel-list">
+            <ul></ul>
+        </section>
+        <footer>
+            <nav>
+                <ul>
+                    <li><button class="btn btn-news">News</button></li>
+                    <li class="btn btn-updates">Updates</li>
+                    <li class="btn btn-social">Social</li>
+                    <li class="btn btn-offers">Offers</li>
+                </ul>   
+            </nav>
+        </footer>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+>>>>>>> origin/master
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
