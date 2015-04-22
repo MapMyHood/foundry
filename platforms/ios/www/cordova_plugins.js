@@ -29,13 +29,6 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/org.apache.cordova.statusbar/www/statusbar.js",
-        "id": "org.apache.cordova.statusbar.statusbar",
-        "clobbers": [
-            "window.StatusBar"
-        ]
-    },
-    {
         "file": "plugins/plugin.google.maps/www/googlemaps-cdv-plugin.js",
         "id": "plugin.google.maps.phonegap-googlemaps-plugin",
         "clobbers": [
@@ -54,7 +47,6 @@ module.exports.metadata =
 // TOP OF METADATA
 {
     "org.apache.cordova.geolocation": "0.3.12",
-    "org.apache.cordova.statusbar": "0.1.10",
     "plugin.google.maps": "1.2.5",
     "plugin.http.request": "1.0.4",
     "com.googlemaps.ios": "1.9.2"

@@ -41,7 +41,6 @@
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
 		756B75B3CF904949B61920AD /* CDVLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = A09B495C7C2D458192DF4847 /* CDVLocation.m */; };
 		7BA6C81AD02E4ECE9605EC45 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCE8789DD54D44F1829FA3F3 /* CoreLocation.framework */; };
-		04162BB193FF493CAD3AFA0C /* CDVStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2EBE0A38ACF94CBEB4A8F3A5 /* CDVStatusBar.m */; };
 		06168E82EAC64E779D922474 /* HttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B3B0899B99894F9181DEB4FB /* HttpRequest.m */; };
 		2E1A6C9CD615428B84A1E63E /* R9HTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ACA2F6FD0604F0985345F83 /* R9HTTPRequest.m */; };
 		C7DFF7766D08468A9A1E88D7 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 80B522FE4B4E4191BA86D859 /* README */; };
@@ -146,8 +145,6 @@
 		A09B495C7C2D458192DF4847 /* CDVLocation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVLocation.m"; path = "org.apache.cordova.geolocation/CDVLocation.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		296EB73188FB4727816F3FDA /* CDVLocation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVLocation.h"; path = "org.apache.cordova.geolocation/CDVLocation.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		BCE8789DD54D44F1829FA3F3 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "CoreLocation.framework"; path = "System/Library/Frameworks/CoreLocation.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
-		2EBE0A38ACF94CBEB4A8F3A5 /* CDVStatusBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVStatusBar.m"; path = "org.apache.cordova.statusbar/CDVStatusBar.m"; sourceTree = "<group>"; fileEncoding = 4; };
-		FB0C382D6C3A481EA63C1FC6 /* CDVStatusBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVStatusBar.h"; path = "org.apache.cordova.statusbar/CDVStatusBar.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		B3B0899B99894F9181DEB4FB /* HttpRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "HttpRequest.m"; path = "plugin.http.request/HttpRequest/HttpRequest.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		4ACA2F6FD0604F0985345F83 /* R9HTTPRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "R9HTTPRequest.m"; path = "plugin.http.request/HttpRequest/R9HTTPRequest/R9HTTPRequest.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		80B522FE4B4E4191BA86D859 /* README */ = {isa = PBXFileReference; lastKnownFileType = unknown; name = "README"; path = "plugin.http.request/README"; sourceTree = "<group>"; fileEncoding = 4; };
@@ -334,8 +331,6 @@
 			children = (
 				A09B495C7C2D458192DF4847 /* CDVLocation.m */,
 				296EB73188FB4727816F3FDA /* CDVLocation.h */,
-				2EBE0A38ACF94CBEB4A8F3A5 /* CDVStatusBar.m */,
-				FB0C382D6C3A481EA63C1FC6 /* CDVStatusBar.h */,
 				B3B0899B99894F9181DEB4FB /* HttpRequest.m */,
 				4ACA2F6FD0604F0985345F83 /* R9HTTPRequest.m */,
 				80B522FE4B4E4191BA86D859 /* README */,
@@ -568,7 +563,6 @@
 				1D3623260D0F684500981E51 /* AppDelegate.m in Sources */,
 				302D95F114D2391D003F00A1 /* MainViewController.m in Sources */,
 				756B75B3CF904949B61920AD /* CDVLocation.m in Sources */,
-				04162BB193FF493CAD3AFA0C /* CDVStatusBar.m in Sources */,
 				06168E82EAC64E779D922474 /* HttpRequest.m in Sources */,
 				2E1A6C9CD615428B84A1E63E /* R9HTTPRequest.m in Sources */,
 				C7DFF7766D08468A9A1E88D7 /* README in Resources */,
