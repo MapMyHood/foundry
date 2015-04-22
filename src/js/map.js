@@ -24,7 +24,6 @@ module.exports = (function() {
 
         render = function(selector) {
 
-            alert("render map +++ " + selector);
 
             var mapElem = document.getElementById(selector),
                 map = plugin.google.maps.Map.getMap();
@@ -32,14 +31,10 @@ module.exports = (function() {
             // Initialize the map view
             map.getMyLocation(function(location) {
 
-                alert("getting location");
-
                 var latLng = new plugin.google.maps.LatLng(
                     location.latLng.lat,
                     location.latLng.lng
                 );
-
-                alert("Setting location" + JSON.stringify(latLng));
 
                 map.setOptions({
                     'backgroundColor': 'white',
