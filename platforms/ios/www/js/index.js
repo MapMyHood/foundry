@@ -20,29 +20,66 @@
 
 var location = require("./location");
 
-window.app = {
+window.app = (function() {
+
+    alert("Code running");
+
+    var initialize,
+        bindEvents,
+        onDeviceReady,
+        render;
 
     // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
+    initialize = function() {
+        alert("init");
+        bindEvents();
+    };
 
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
+    bindEvents = function() {
+        alert("Bind events");
+        document.addEventListener('deviceready', onDeviceReady, false);
+    };
+
     // deviceready Event Handler
     //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        location.getUsersLocation();
-    }
-};
+    onDeviceReady = function() {
+        alert("R1 ender running");
+        location.getUsersLocation(render);
+    };
 
+    render = function(position) {
+
+        alert("Render running");
+
+        var mapElem = document.getElementById("map");
+
+        // full size of screen
+        mapElem.style.width = window.innerWidth + "px";
+        mapElem.style.height = (window.innerHeight - 140) + "px";
+
+        // this is where the custom code will go for each mapping implementation
+            var mapOptions = {
+                center: {
+                    lat: -34.397,
+                    lng: 150.644
+                },
+                zoom: 8
+            };
+            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    
+    };
+
+    return {
+        initialize: initialize
+    };
+
+}());
 },{"./location":2}],2:[function(require,module,exports){
 module.exports = (function () {
 
@@ -71,8 +108,17 @@ module.exports = (function () {
               'message: ' + error.message + '\n');
     };
 
-    getUsersLocation = function () {
-        navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    getUsersLocation = function (callback) {
+
+        alert("Get users location..");
+
+        navigator.geolocation.getCurrentPosition(function (position) {
+            callback(position);
+            onSuccess(position);
+        }, function (error) {
+            callback(null);
+            onError(error);
+        });
     };
 
     return {
@@ -81,4 +127,19 @@ module.exports = (function () {
 
 }());
 
-},{}]},{},[1,2]);
+},{}],3:[function(require,module,exports){
+module.exports = (function () {
+
+    var newMap;
+
+    newMap = function () {
+
+    };
+
+    return {
+        newMap: newMap
+    };
+
+}());
+
+},{}]},{},[1,2,3]);
