@@ -68,6 +68,9 @@ footer {
 .panel-search {
     display: none;
 }
+.panel-settings {
+    display: none;
+}
 header > nav {
     display: inline-block;
 }
