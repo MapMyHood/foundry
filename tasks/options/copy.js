@@ -3,6 +3,7 @@ module.exports = {
 		cwd: 'src',
 		expand: true,
 		src: [
+			'vendor/**',
 			'css/**',
 			'img/**',
 			'res/**',

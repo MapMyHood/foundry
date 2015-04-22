@@ -26,23 +26,17 @@
         <meta name="msapplication-tap-highlight" content="no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-        <link href="css/open-iconic.min.css" rel="stylesheet" type="text/css" />
+        <link href="vendor/rachet/css/ratchet.min.css" rel="stylesheet" type="text/css" />
+        <link href="vendor/rachet/css/ratchet-theme-ios.min.css" rel="stylesheet" type="text/css" />
         <link href="css/index.css" rel="stylesheet" type="text/css" />
         <title>Hello World</title>
     </head>
     <body>
-        <header>
-            <button class="btn btn-search">
-                <img src="img/svg/magnifying-glass.svg" />
-            </button>
-            <button class="btn btn-toggle">
-                <img src="img/svg/map-marker.svg" />
-                <img src="img/svg/list.svg" class="hidden" />
-            </button>
-            <h1>MapMyHood</h1>
-            <button class="btn btn-settings">
-                <img src="img/svg/cog.svg" />
-            </button>
+        <header class="bar bar-nav">
+            <a id="btn-search" class="icon icon icon-search pull-left"></a>
+            <a id="btn-toggle" class="icon icon-list pull-left"></a>
+            <a id="btn-settings" class="icon icon-gear pull-right"></a>
+            <h1 class="title">Map My Hood</h1>
         </header>
         
         <section class="panel panel-map">
@@ -60,16 +54,19 @@
         </section>    
 
         <footer>
-            <nav>
-                <ul>
-                    <li><button class="btn btn-news">
-                         <img src="img/svg/script.svg" />
-                    </button></li>
-                    <li><button class="btn btn-updates"> <img src="img/svg/warning.svg" /></button></li>
-                    <li><button class="btn btn-offers">
-                         <img src="img/svg/dollar.svg" />
-                    </li>
-                </ul>   
+            <nav class="bar bar-tab">
+                <a class="tab-item active" href="#" id="btn-news">
+                    <span class="icon icon-pages"></span>
+                    <span class="tab-label">News</span>
+                </a>
+                <a class="tab-item" href="#" id="btn-alerts">
+                    <span class="icon icon-info"></span>
+                    <span class="tab-label">Alerts</span>
+                </a>
+                <a class="tab-item" href="#" id="btn-offers">
+                    <span class="icon icon-star"></span>
+                    <span class="tab-label">Offers</span>
+                </a>
             </nav>
         </footer>
 

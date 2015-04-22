@@ -57,12 +57,12 @@ window.app = (function() {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents = function() {
 
-        var btnToggle   = document.querySelector("button.btn-toggle"),
-            btnSettings = document.querySelector("button.btn-settings"),
-            btnSearch   = document.querySelector("button.btn-search"),
-            btnNews     = document.querySelector("button.btn-news"),
-            btnAlerts   = document.querySelector("button.btn-alerts"),
-            btnOffers   = document.querySelector("button.btn-offers");
+        var btnToggle   = document.getElementById("btn-toggle"),
+            btnSettings = document.getElementById("btn-settings"),
+            btnSearch   = document.getElementById("btn-search"),
+            btnNews     = document.getElementById("btn-news"),
+            btnAlerts   = document.getElementById("btn-alerts"),
+            btnOffers   = document.getElementById("btn-offers");
 
         document.addEventListener('deviceready', onDeviceReady, false);
 
