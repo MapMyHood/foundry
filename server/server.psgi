@@ -123,7 +123,7 @@ sub getContent {
 
   my $url = "${base}{$channel,$page,$pageSize,$filter,$radial}&api_key=$apiKey";
 
-  my $reaResults = cache_get('rea');
+  my $reaResults = cache_get('rea', $lat, $long);
 
   if (!defined $reaResults) {
     my $res = $ua->get($url);
@@ -170,7 +170,7 @@ sub getContent {
           };
         }
       }
-      cache_set('rea', $reaResults);
+      cache_set('rea', $reaResults, $lat, $long);
     }
     else {
       warn $res->status_line;
@@ -349,9 +349,9 @@ sub rad2deg {
 }
 
 sub cache_get {
-  my ($source) = @_;
+  my ($source, $lat, $long) = @_;
 
-  my $filename = "$source.storable";
+  my $filename = "$source-$lat-$long.storable";
 
   # Cache expiry set to 1 hour
   if (-e $filename && stat($filename)->mtime >= (time() - 3600)) {
@@ -361,8 +361,8 @@ sub cache_get {
 }
 
 sub cache_set {
-  my ($source, $data) = @_;
+  my ($source, $data, $lat, $long) = @_;
 
-  my $filename = "$source.storable";
+  my $filename = "$source-$lat-$long.storable";
   store($data, $filename)
 }
