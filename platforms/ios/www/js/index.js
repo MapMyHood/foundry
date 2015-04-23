@@ -1,4 +1,32 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = {
+    distance: function (lat1, lon1, lat2, lon2, unit) {
+
+        alert(JSON.stringify(arguments));
+        var radlat1 = Math.PI * lat1 / 180,
+            radlat2 = Math.PI * lat2 / 180,
+            radlon1 = Math.PI * lon1 / 180,
+            radlon2 = Math.PI * lon2 / 180,
+            theta = lon1 - lon2,
+            radtheta = Math.PI * theta / 180,
+            dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+
+        dist = Math.acos(dist);
+        dist = dist * 180 / Math.PI;
+        dist = dist * 60 * 1.1515;
+
+        if (unit == "K") {
+            dist = dist * 1.609344;
+        }
+
+        if (unit == "N") {
+            dist = dist * 0.8684;
+        }
+
+        return Math.round(dist);
+    }
+};
+},{}],2:[function(require,module,exports){
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -37,11 +65,17 @@ window.app = (function() {
         listView = document.querySelector("section.panel > .view-list");
 
     // list template
-    template = dot.template('<ul>{{~it.resultSet :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="http://placehold.it/42x42"><div class="media-body">{{=value.headline}}<p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
+    template = dot.template('<ul class="table-view">{{~it.resultSet :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<span class="distance">{{=value.distance}} kms</span><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
-        panelList.innerHTML = template(data);
+        listView.innerHTML = template(data);
     };
+
+    // add event to re-render template
+    window.subscribe("data", function (data) {
+        alert(data.resultSet[0].distance);
+        render(data);
+    });
 
     toggleView = function (btn) {
 
@@ -77,7 +111,7 @@ window.app = (function() {
             len = panels.length;
 
         while (len--) {
-            panels[len].style.height = (window.innerHeight - 64) + 'px';
+            panels[len].style.height = (window.innerHeight - 114) + 'px';
         }
 
         bindEvents();
@@ -98,7 +132,6 @@ window.app = (function() {
         document.addEventListener('deviceready', onDeviceReady, false);
 
         btnToggle.addEventListener("touchstart", function (e) {
-            //togglePanel('map');
             e.preventDefault();
             e.stopPropagation();
             toggleView(e.target);
@@ -123,8 +156,6 @@ window.app = (function() {
     onDeviceReady = function() {
         var mapHandle = map.newMap();
         mapHandle.render("map_canvas");
-
-        render(model);
     };
 
     return {
@@ -132,7 +163,7 @@ window.app = (function() {
     };
 
 }());
-},{"./lib/dot":2,"./map":3,"./model":4}],2:[function(require,module,exports){
+},{"./lib/dot":3,"./map":4,"./model":5}],3:[function(require,module,exports){
 // doT.js
 // 2011-2014, Laura Doktorova, https://github.com/olado/doT
 // Licensed under the MIT license.
@@ -274,7 +305,7 @@ window.app = (function() {
 	};
 }());
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = (function() {
 
     var newMap;
@@ -283,46 +314,63 @@ module.exports = (function() {
 
         var render,
             map,
+            updateMapData,
             getLocation,
-            centerMap;
+            centerMap,
+            latLng = new plugin.google.maps.LatLng(
+                -33.885193,
+                151.209399
+            );
+
+        updateMapData = function (mapHandle) {
+         /*   var len = data.length;
+            while (len--) {
+                mapHandle.addMarker({
+                    snippet: data[len].url,
+                    animation: plugin.google.maps.Animation.BOUNCE,
+                    title: data[len].headline,
+                    'position': new plugin.google.maps.LatLng(
+                        data[len].location[0].latitude,
+                        data[len].location[0].longitude
+                    ),
+                });
+            }*/
+        };
 
         render = function(selector) {
 
             var mapElem = document.getElementById(selector),
-                map = plugin.google.maps.Map.getMap();
+                map = plugin.google.maps.Map.getMap(mapElem, {
+                target: latLng,
+                'controls': {
+                    'compass': true,
+                    'myLocationButton': true,
+                    'indoorPicker': true,
+                    'zoom': true
+                }
+            });
 
-            map.setDiv(mapElem);
+                alert("render map");
 
             // Initialize the map view
             map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
+
+                 alert("map ready");
                 
                 map.getMyLocation(function(location) {
 
-                    alert("getting location" + JSON.stringify(location));
+                    alert("Sending location");
 
-                    var latLng = new plugin.google.maps.LatLng(
-                        location.latLng.lat,
-                        location.latLng.lng
-                    );
+                    // change this to location to be real time
+                    window.publish('location', [-33.885193, 151.209399]);
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 17
+                      'zoom': 12
+                    }, function () {
+                        updateMapData(map);
                     });
-
-                    map.addCircle({
-                        'center': latLng,
-                        'radius': 6,
-                        'strokeColor' : '#428bca',
-                        'strokeWidth': 1,
-                        'fillColor' : '#007aff'
-                    });
-
-                    // users location
-                    /*map.addMarker({
-                        'position': latLng,
-                        icon: 'img/svg/people.svg'
-                    });*/
+                    
                 });
 
             });
@@ -339,34 +387,60 @@ module.exports = (function() {
     };
 
 }());
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+var helpers = require("./helpers");
+
 module.exports = (function () {
 
-    var results = {
-        resultSize: 2,
-        resultSet: [{
-            headline: "Story One",
-            standfirst: "Stand First One",
-            url: "http://www.google.com.au?v=1",
-            location: "-33.884627, 151.209198",
-            thumbnail: {
-                uri: "",
-                width: 100,
-                height: 100
-            }
-        },{
-            headline: "Story Two",
-            standfirst: "Stand First Two",
-            url: "http://www.google.com.au?v=2",
-            location: "-33.886600, 151.208253",
-            thumbnail: {
-                uri: "",
-                width: 100,
-                height: 100
-            }
-        }]
+    var init,
+        process,
+        distance,
+        poll,
+        interval,
+        get;
+
+    poll = function (lat, lng, distance) {
+        interval = setInterval(function () {
+            jsonpClient("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance + "&callback=updateFromNick", function (err, data) {
+                window.publish("update", [data]);
+            });
+        }, 1000);
     };
 
-    return results;
+    init = function (lat, lng) {
+
+        //alert(lat + "," + lng);
+
+        poll(lat, lng, "5");
+
+        //alert("init complete");
+    };
+
+    distance = function (data) {
+        data.forEach(function (value, index, arr) {
+            data[index].distance = helpers.distance(
+                value.location[0].latitude,
+                value.location[0].longitude,
+                lat,
+                lng,
+                "K"
+            );
+        });
+    };
+
+    get = function () {
+        return results;
+    };
+
+    // update distance on location change
+    window.subscribe('location', function (lat, lng) {
+        //alert("location");
+        init(lat, lng);
+    });
+
+    // update distance on location change
+    window.subscribe('update', function (data) {
+        window.publish('data', [distance(data.resultSet)]);
+    });
 }());
-},{}]},{},[1,2,3,4]);
+},{"./helpers":1}]},{},[1,2,4,5]);

@@ -6,46 +6,63 @@ module.exports = (function() {
 
         var render,
             map,
+            updateMapData,
             getLocation,
-            centerMap;
+            centerMap,
+            latLng = new plugin.google.maps.LatLng(
+                -33.885193,
+                151.209399
+            );
+
+        updateMapData = function (mapHandle) {
+         /*   var len = data.length;
+            while (len--) {
+                mapHandle.addMarker({
+                    snippet: data[len].url,
+                    animation: plugin.google.maps.Animation.BOUNCE,
+                    title: data[len].headline,
+                    'position': new plugin.google.maps.LatLng(
+                        data[len].location[0].latitude,
+                        data[len].location[0].longitude
+                    ),
+                });
+            }*/
+        };
 
         render = function(selector) {
 
             var mapElem = document.getElementById(selector),
-                map = plugin.google.maps.Map.getMap();
+                map = plugin.google.maps.Map.getMap(mapElem, {
+                target: latLng,
+                'controls': {
+                    'compass': true,
+                    'myLocationButton': true,
+                    'indoorPicker': true,
+                    'zoom': true
+                }
+            });
 
-            map.setDiv(mapElem);
+                alert("render map");
 
             // Initialize the map view
             map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
+
+                 alert("map ready");
                 
                 map.getMyLocation(function(location) {
 
-                    alert("getting location" + JSON.stringify(location));
+                    alert("Sending location");
 
-                    var latLng = new plugin.google.maps.LatLng(
-                        location.latLng.lat,
-                        location.latLng.lng
-                    );
+                    // change this to location to be real time
+                    window.publish('location', [-33.885193, 151.209399]);
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 17
+                      'zoom': 12
+                    }, function () {
+                        updateMapData(map);
                     });
-
-                    map.addCircle({
-                        'center': latLng,
-                        'radius': 6,
-                        'strokeColor' : '#428bca',
-                        'strokeWidth': 1,
-                        'fillColor' : '#007aff'
-                    });
-
-                    // users location
-                    /*map.addMarker({
-                        'position': latLng,
-                        icon: 'img/svg/people.svg'
-                    });*/
+                    
                 });
 
             });

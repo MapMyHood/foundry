@@ -25,6 +25,6 @@
     "load-grunt-config": "^0.17.1"
   },
   "scripts": {
-    "start": "grunt && phonegap run ios --emulator"
+    "start": "grunt && phonegap build ios && phonegap run ios --emulator"
   }
 }

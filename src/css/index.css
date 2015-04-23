@@ -58,12 +58,29 @@ body {
     display: none;
 }
 
+ul,
+li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
 header .icon {
     color: #929292;
 }
 
 header .icon.active {
     color: #007aff;
+}
+
+.distance {
+    font-size: 12px;
+    background: red;
+    border-radius: 4px;
+    color: #FFF;
+    padding: 4px;
+    display: inline-block;
+    line-height: 1;
 }
 
 .highlightPanel ul, .highlightPanel li {
@@ -85,9 +102,6 @@ section.panel {
 section.panel.hidden {
     display: none;
     visibility: hidden;
-}
-section.panel > .view-map {
-    background: green;
 }
 section > .view {
     height: 100%;

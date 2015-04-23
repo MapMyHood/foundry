@@ -36,11 +36,17 @@ window.app = (function() {
         listView = document.querySelector("section.panel > .view-list");
 
     // list template
-    template = dot.template('<ul>{{~it.resultSet :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="http://placehold.it/42x42"><div class="media-body">{{=value.headline}}<p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
+    template = dot.template('<ul class="table-view">{{~it.resultSet :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<span class="distance">{{=value.distance}} kms</span><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
         listView.innerHTML = template(data);
     };
+
+    // add event to re-render template
+    window.subscribe("data", function (data) {
+        alert(data.resultSet[0].distance);
+        render(data);
+    });
 
     toggleView = function (btn) {
 
@@ -76,7 +82,7 @@ window.app = (function() {
             len = panels.length;
 
         while (len--) {
-            panels[len].style.height = (window.innerHeight - 64) + 'px';
+            panels[len].style.height = (window.innerHeight - 114) + 'px';
         }
 
         bindEvents();
@@ -97,7 +103,6 @@ window.app = (function() {
         document.addEventListener('deviceready', onDeviceReady, false);
 
         btnToggle.addEventListener("touchstart", function (e) {
-            //togglePanel('map');
             e.preventDefault();
             e.stopPropagation();
             toggleView(e.target);
@@ -122,8 +127,6 @@ window.app = (function() {
     onDeviceReady = function() {
         var mapHandle = map.newMap();
         mapHandle.render("map_canvas");
-
-        render(model);
     };
 
     return {

@@ -94,11 +94,13 @@
         <script>
             (function () {
                 var elem = document.querySelector("section.panel-map > div.view-map");
-                    elem.innerHTML = '<div id="map_canvas" style="width:100%; height:'+(window.innerHeight-60)+'px"></div>'
+                    elem.innerHTML = '<div id="map_canvas" style="width:100%; height:'+(window.innerHeight-110)+'px"></div>'
             }());
         </script>
 
         <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/lib/jsonp-client.min.js"></script>
+        <script type="text/javascript" src="js/lib/minpubsub.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript">
             app.initialize();
