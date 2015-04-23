@@ -56,12 +56,13 @@ builder {
                 'search' => sub {
                     my $self = shift;
                     my ($latlong,$radius) = @_;
-                    $message = getContent($latlong,$radius);
+                    #$message = getContent($latlong,$radius);
+                    $message = getContent('-33.885742,151.209233','5');
 
                     $self->get('nick' => sub {
                         my ($self, $err, $nick) = @_;
 
-                        $self->broadcast->emit('user message', $nick, $message);
+                        $self->sockets->emit('user message', $message);
                     });
                 }
             );
@@ -145,7 +146,7 @@ sub getContent {
   $client->setHost('http://cdn.newsapi.com.au');
 
   $client->GET(
-      'content/v1/?format=json&geoDistance=' . $latlong . ":" . $distance . '&type=news_story&origin=methode&includeRelated=false&includeBodies=true&includeFutureDated=false&pageSize=2&offset=0&maxRelatedLevel=1&api_key=r7j3ufg79yqkpmszf73b8ked',
+      'content/v1/?format=json&geoDistance=' . $latlong . ":" . $distance . '&type=news_story&origin=methode&includeRelated=false&includeBodies=true&includeFutureDated=false&pageSize=10&offset=0&maxRelatedLevel=1&api_key=r7j3ufg79yqkpmszf73b8ked',
       $headers
   );
 
