@@ -173,60 +173,7 @@ sub getContent {
   }
 
   ## Add the REA stuff in
-    my $ua = LWP::UserAgent->new;
-    my $json = JSON->new;
-
-    my $base = 'http://trial1060.api.mashery.com/v1/services/listings/search?query=';
-    my $apiKey = 'ug5ddujnfet3vuahkwra8ua8';
-
-    my $channel = uri_escape('"channel":"buy"');
-    my $pageNum = 1;
-    my $page = uri_escape('"page":"' . $pageNum . '"');
-    my $pageSize = uri_escape('"pageSize":"20"');
-    my $filter = uri_escape('"filters":{"surroundingSuburbs":false}');
-    my $radial = uri_escape('"radialSearch":{"center":[' . "$latlong" . ']}');
-
-    my $url = "${base}{$channel,$page,$pageSize,$filter,$radial}&api_key=$apiKey";
-
-    my $res = $ua->get($url);
-
-    if ($res->is_success) {
-        my $listings = $json->decode($res->content);
-
-        foreach my $listing (@{$listings->{tieredResults}->[0]->{results}}) {
-            next unless $listing->{inspectionsAndAuctions};
-
-            foreach my $inspection (@{$listing->{inspectionsAndAuctions}}) {
-                next unless $inspection->{auction};
-
-                my $standfirst = "Auction on " .
-                                 $inspection->{dateDisplay} .
-                                 " at " . $inspection->{startTimeDisplay} .
-                                 ". " . $listing->{description};
-                $standfirst =~ s|<.+?>||g;
-
-                push @resset, {
-                    url => $listing->{'_links'}->{short}->{href},
-                    headline => $listing->{title},
-                    standfirst => elide($standfirst, 150, {at_space => 1}),
-                    paidStatus => 'NON_PREMIUM',
-                    originalSource => 'REA',
-                    location => {
-                        latitude => $listing->{address}->{location}->{latitude},
-                        longitude => $listing->{address}->{location}->{longitude}
-                    },
-                    thumbnail => {
-                        uri => $listing->{mainImage}->{server} . '/120x90' . $listing->{mainImage}->{uri},
-                        width => 120,
-                        height => 90,
-                    }
-                };
-            }
-        }
-    }
-    else {
-        warn $res->status_line;
-    }
+  
 
 
 $res->{'resultSet'} = \@resset;
