@@ -14,8 +14,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Why can’t Blues settle on a halves combo?"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -36,8 +35,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Spedding ’repeatedly raped girl, 3, in caravan’"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -55,8 +53,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Is New Zealand AFL’s next destination?"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -71,8 +68,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Rebels hit by loss of Jones"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -90,8 +86,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Innovative designs offer homebuyers flexibility"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -106,8 +101,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Taufua hit with booze ban, $10k fine"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -125,8 +119,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Paralympic dream revived for SA duo"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -141,8 +134,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "A-League teams: Round 27"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -163,8 +155,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Spriggs finds his groove again"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -179,8 +170,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Telepathic tops Collett’s full book"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -195,8 +185,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119628135",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Top-floor, N-facing, converted warehouse"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -211,8 +200,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119462391",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "\"KIPPAX APARTMENTS\" Stylish Inner City Loft apartment Auction 2/5/15 @ 12noon"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -227,8 +215,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119450463",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Split-level style in popular 'Hart' complex"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -243,8 +230,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119448919",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Exclusive Residence in the Delano Apartments"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -259,8 +245,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119548459",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "NORTH-EAST FACING IN AN IDEAL LOCATION! "
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -275,8 +260,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119466331",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Privacy, peace and convenience"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -291,7 +275,6 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119476551",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Uplifting Design - Remarkable 3 Level Terrace"
-	}
-],
-"resultSize": 17
+	}],
+	"resultSize": 17
 };

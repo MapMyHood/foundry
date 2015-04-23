@@ -1,31 +1,41 @@
-var helpers = require("./helpers");
+var helpers = require("./helpers"),
+    sampleData = require("./sample");
 
 module.exports = (function () {
 
     var init,
         process,
         poll,
-        distance = document.getElementById("distance").innerHTML,
-        sampleData = require("./sample"),
+        distance,
+        getDistance,
         interval,
         get;
 
+    getDistance = function () {
+        try {
+            return document.getElementById("distance").innerHTML;
+        } catch (e) {
+            console.error("distance value not found in html");
+        }
+        return "5";
+    };
+    
+
     // users lat long
-    poll = function (lat, lng, distance) {
-        distance = document.getElementById("distance").innerHTML;
+    poll = function (lat, lng) {
         interval = setInterval(function () {
-            window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance, function (data) {
-                window.publish("update", [data, lat, lng, distance]);
+            window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + getDistance(), function (data) {
+                window.publish("update", [data, lat, lng]);
             });
         }, 10000);
     };
 
     init = function (lat, lng) {
-        window.publish("update", [sampleData, lat, lng]);
-        window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance, function (data) {
+       // window.publish("update", [sampleData, lat, lng]);
+        window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + getDistance(), function (data) {
              window.publish("update", [data, lat, lng]);
         });
-        poll(lat, lng, "5");
+        poll(lat, lng);
     };
 
     distance = function (data, lat, lng) {

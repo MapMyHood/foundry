@@ -349,14 +349,14 @@ module.exports = (function() {
                 markerExists,
                 markers = [],
                 map = plugin.google.maps.Map.getMap(mapElem, {
-                target: latLng,
-                'controls': {
-                    'compass': true,
-                    'myLocationButton': true,
-                    'indoorPicker': true,
-                    'zoom': true
-                }
-            });
+                    target: latLng,
+                    'controls': {
+                        'compass': true,
+                        'myLocationButton': true,
+                        'indoorPicker': true,
+                        'zoom': true
+                    }
+                });
 
             markerExists = function (url) {
                 return !!markers[helpers.hashCode(url)] || false;
@@ -392,6 +392,8 @@ module.exports = (function() {
 
             // Initialize the map view
             map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
+
+                alert("map ready");
                 
                 map.getMyLocation(function(location) {
 
@@ -420,34 +422,44 @@ module.exports = (function() {
 
 }());
 },{"./helpers":1}],5:[function(require,module,exports){
-var helpers = require("./helpers");
+var helpers = require("./helpers"),
+    sampleData = require("./sample");
 
 module.exports = (function () {
 
     var init,
         process,
         poll,
-        distance = document.getElementById("distance").innerHTML,
-        sampleData = require("./sample"),
+        distance,
+        getDistance,
         interval,
         get;
 
+    getDistance = function () {
+        try {
+            return document.getElementById("distance").innerHTML;
+        } catch (e) {
+            console.error("distance value not found in html");
+        }
+        return "5";
+    };
+    
+
     // users lat long
-    poll = function (lat, lng, distance) {
-        distance = document.getElementById("distance").innerHTML;
+    poll = function (lat, lng) {
         interval = setInterval(function () {
-            window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance, function (data) {
-                window.publish("update", [data, lat, lng, distance]);
+            window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + getDistance(), function (data) {
+                window.publish("update", [data, lat, lng]);
             });
         }, 10000);
     };
 
     init = function (lat, lng) {
-        window.publish("update", [sampleData, lat, lng]);
-        window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance, function (data) {
+       // window.publish("update", [sampleData, lat, lng]);
+        window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + getDistance(), function (data) {
              window.publish("update", [data, lat, lng]);
         });
-        poll(lat, lng, "5");
+        poll(lat, lng);
     };
 
     distance = function (data, lat, lng) {
@@ -496,8 +508,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Why can’t Blues settle on a halves combo?"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -518,8 +529,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Spedding ’repeatedly raped girl, 3, in caravan’"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -537,8 +547,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Is New Zealand AFL’s next destination?"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -553,8 +562,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Rebels hit by loss of Jones"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -572,8 +580,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Innovative designs offer homebuyers flexibility"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -588,8 +595,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Taufua hit with booze ban, $10k fine"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -607,8 +613,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Paralympic dream revived for SA duo"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -623,8 +628,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "A-League teams: Round 27"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -645,8 +649,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Spriggs finds his groove again"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 100,
 			"height": 75,
@@ -661,8 +664,7 @@ module.exports = {
 		"originalSource": "news",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Telepathic tops Collett’s full book"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -677,8 +679,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119628135",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Top-floor, N-facing, converted warehouse"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -693,8 +694,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119462391",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "\"KIPPAX APARTMENTS\" Stylish Inner City Loft apartment Auction 2/5/15 @ 12noon"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -709,8 +709,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119450463",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Split-level style in popular 'Hart' complex"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -725,8 +724,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119448919",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Exclusive Residence in the Delano Apartments"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -741,8 +739,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119548459",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "NORTH-EAST FACING IN AN IDEAL LOCATION! "
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -757,8 +754,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119466331",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Privacy, peace and convenience"
-	},
-	{
+	}, {
 		"thumbnail": {
 			"width": 120,
 			"height": 90,
@@ -773,8 +769,7 @@ module.exports = {
 		"url": "http://www.realestate.com.au/119476551",
 		"paidStatus": "NON_PREMIUM",
 		"headline": "Uplifting Design - Remarkable 3 Level Terrace"
-	}
-],
-"resultSize": 17
+	}],
+	"resultSize": 17
 };
 },{}]},{},[1,2,4,5,6]);

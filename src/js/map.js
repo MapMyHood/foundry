@@ -24,14 +24,14 @@ module.exports = (function() {
                 markerExists,
                 markers = [],
                 map = plugin.google.maps.Map.getMap(mapElem, {
-                target: latLng,
-                'controls': {
-                    'compass': true,
-                    'myLocationButton': true,
-                    'indoorPicker': true,
-                    'zoom': true
-                }
-            });
+                    target: latLng,
+                    'controls': {
+                        'compass': true,
+                        'myLocationButton': true,
+                        'indoorPicker': true,
+                        'zoom': true
+                    }
+                });
 
             markerExists = function (url) {
                 return !!markers[helpers.hashCode(url)] || false;
@@ -67,6 +67,8 @@ module.exports = (function() {
 
             // Initialize the map view
             map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
+
+                alert("map ready");
                 
                 map.getMyLocation(function(location) {
 
