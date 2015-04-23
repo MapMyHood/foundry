@@ -1,3 +1,7 @@
+/* jshint: loopfunc: true*/
+
+var helpers = require("./helpers");
+
 module.exports = (function() {
 
     var newMap;
@@ -7,7 +11,6 @@ module.exports = (function() {
         var render,
             map,
             updateMapData,
-            markers = [],
             getLocation,
             centerMap,
             latLng = new plugin.google.maps.LatLng(
@@ -18,6 +21,8 @@ module.exports = (function() {
         render = function(selector) {
 
             var mapElem = document.getElementById(selector),
+                markerExists,
+                markers = [],
                 map = plugin.google.maps.Map.getMap(mapElem, {
                 target: latLng,
                 'controls': {
@@ -28,24 +33,35 @@ module.exports = (function() {
                 }
             });
 
+            markerExists = function (url) {
+                return !!markers[helpers.hashCode(url)] || false;
+            };
+
             // subscribe to updates
 
             window.subscribe('data', function (data) {
                 
                 var len = data.length;
-
-                map.clear();
                 
                 while (len--) {
-                    map.addMarker({
-                        snippet: data[len].url,
-                        animation: plugin.google.maps.Animation.BOUNCE,
-                        title: data[len].headline,
-                        'position': new plugin.google.maps.LatLng(
-                            data[len].location[0].latitude,
-                            data[len].location[0].longitude
-                        ),
-                    });
+
+                    // check if marker exists
+                    if (markerExists(data[len].url)) {
+                        console.log("marker exists");
+                    } else {
+                        console.log("marker does not exist");
+                        map.addMarker({
+                            snippet: data[len].url,
+                            animation: plugin.google.maps.Animation.BOUNCE,
+                            title: data[len].headline,
+                            'position': new plugin.google.maps.LatLng(
+                                data[len].location[0].latitude,
+                                data[len].location[0].longitude
+                            ),
+                        }, function (marker) {
+                            markers[helpers.hashCode(marker.getSnippet())] = marker;
+                        });
+                    }
                 }
             });
 
@@ -59,7 +75,7 @@ module.exports = (function() {
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 12
+                      'zoom': 15
                     });
                     
                 });
