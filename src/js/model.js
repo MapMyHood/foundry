@@ -4,13 +4,15 @@ module.exports = (function () {
 
     var init,
         process,
-        distance,
         poll,
+        distance = document.getElementById("distance").innerHTML,
+        sampleData = require("./sample"),
         interval,
         get;
 
     // users lat long
     poll = function (lat, lng, distance) {
+        distance = document.getElementById("distance").innerHTML;
         interval = setInterval(function () {
             window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance, function (data) {
                 window.publish("update", [data, lat, lng, distance]);
@@ -19,8 +21,9 @@ module.exports = (function () {
     };
 
     init = function (lat, lng) {
-         window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=5", function (data) {
-             window.publish("update", [data, lat, lng, "5"]);
+        window.publish("update", [sampleData, lat, lng]);
+        window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance, function (data) {
+             window.publish("update", [data, lat, lng]);
         });
         poll(lat, lng, "5");
     };

@@ -75,7 +75,7 @@ module.exports = (function() {
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 15
+                      'zoom': 14
                     });
                     
                 });
