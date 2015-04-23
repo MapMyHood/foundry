@@ -36,7 +36,7 @@ window.app = (function() {
         listView = document.querySelector("section.panel > .view-list");
 
     // list template
-    template = dot.template("<ul>{{~it.resultSet :value:index}}<li>{{=value.headline}}!</li>{{~}}</ul>");
+    template = dot.template('<ul>{{~it.resultSet :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="http://placehold.it/42x42"><div class="media-body">{{=value.headline}}<p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
         panelList.innerHTML = template(data);
@@ -125,36 +125,6 @@ window.app = (function() {
 
         render(model);
     };
-
-    /*
-        showSearch = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'block';
-        document.getElementById('settingsPanel').style.display = 'none';                
-    };
-
-    showMap = function() {
-        document.getElementById('mapPanel').style.display = 'block';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'none';                
-    };
-
-    showList = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'block';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'none';        
-    };
-
-    showSettings = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'block';
-    };
-    */
 
     return {
         initialize: initialize
