@@ -106,3 +106,6 @@ section.panel.hidden {
 section > .view {
     height: 100%;
 }
+section > .view-list{
+    overflow: scroll;
+}

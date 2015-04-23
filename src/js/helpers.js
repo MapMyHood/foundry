@@ -1,7 +1,5 @@
 module.exports = {
     distance: function (lat1, lon1, lat2, lon2, unit) {
-
-        alert(JSON.stringify(arguments));
         var radlat1 = Math.PI * lat1 / 180,
             radlat2 = Math.PI * lat2 / 180,
             radlon1 = Math.PI * lon1 / 180,

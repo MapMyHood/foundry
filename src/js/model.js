@@ -9,24 +9,23 @@ module.exports = (function () {
         interval,
         get;
 
+    // users lat long
     poll = function (lat, lng, distance) {
         interval = setInterval(function () {
-            jsonpClient("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance + "&callback=updateFromNick", function (err, data) {
-                window.publish("update", [data]);
+            window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance, function (data) {
+                window.publish("update", [data, lat, lng, distance]);
             });
-        }, 1000);
+        }, 10000);
     };
 
     init = function (lat, lng) {
-
-        //alert(lat + "," + lng);
-
+         window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=5", function (data) {
+             window.publish("update", [data, lat, lng, "5"]);
+        });
         poll(lat, lng, "5");
-
-        //alert("init complete");
     };
 
-    distance = function (data) {
+    distance = function (data, lat, lng) {
         data.forEach(function (value, index, arr) {
             data[index].distance = helpers.distance(
                 value.location[0].latitude,
@@ -36,6 +35,7 @@ module.exports = (function () {
                 "K"
             );
         });
+        return data;
     };
 
     get = function () {
@@ -44,12 +44,13 @@ module.exports = (function () {
 
     // update distance on location change
     window.subscribe('location', function (lat, lng) {
-        //alert("location");
         init(lat, lng);
     });
 
     // update distance on location change
-    window.subscribe('update', function (data) {
-        window.publish('data', [distance(data.resultSet)]);
+    // pass in users lat long
+    window.subscribe('update', function (data, lat, lng) {
+        console.log("data", data);
+        window.publish('data', [distance(data.resultSet, lat, lng)]);
     });
 }());

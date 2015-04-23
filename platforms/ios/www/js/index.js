@@ -1,8 +1,6 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = {
     distance: function (lat1, lon1, lat2, lon2, unit) {
-
-        alert(JSON.stringify(arguments));
         var radlat1 = Math.PI * lat1 / 180,
             radlat2 = Math.PI * lat2 / 180,
             radlon1 = Math.PI * lon1 / 180,
@@ -65,7 +63,7 @@ window.app = (function() {
         listView = document.querySelector("section.panel > .view-list");
 
     // list template
-    template = dot.template('<ul class="table-view">{{~it.resultSet :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<span class="distance">{{=value.distance}} kms</span><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
+    template = dot.template('<ul class="table-view">{{~it :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<br /><button class="btn btn-primary btn-outlined">{{=value.distance}} kms</button><br /><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
         listView.innerHTML = template(data);
@@ -73,7 +71,6 @@ window.app = (function() {
 
     // add event to re-render template
     window.subscribe("data", function (data) {
-        alert(data.resultSet[0].distance);
         render(data);
     });
 
@@ -315,27 +312,13 @@ module.exports = (function() {
         var render,
             map,
             updateMapData,
+            markers = [],
             getLocation,
             centerMap,
             latLng = new plugin.google.maps.LatLng(
                 -33.885193,
                 151.209399
             );
-
-        updateMapData = function (mapHandle) {
-         /*   var len = data.length;
-            while (len--) {
-                mapHandle.addMarker({
-                    snippet: data[len].url,
-                    animation: plugin.google.maps.Animation.BOUNCE,
-                    title: data[len].headline,
-                    'position': new plugin.google.maps.LatLng(
-                        data[len].location[0].latitude,
-                        data[len].location[0].longitude
-                    ),
-                });
-            }*/
-        };
 
         render = function(selector) {
 
@@ -350,16 +333,31 @@ module.exports = (function() {
                 }
             });
 
-                alert("render map");
+            // subscribe to updates
+
+            window.subscribe('data', function (data) {
+                
+                var len = data.length;
+
+                map.clear();
+                
+                while (len--) {
+                    map.addMarker({
+                        snippet: data[len].url,
+                        animation: plugin.google.maps.Animation.BOUNCE,
+                        title: data[len].headline,
+                        'position': new plugin.google.maps.LatLng(
+                            data[len].location[0].latitude,
+                            data[len].location[0].longitude
+                        ),
+                    });
+                }
+            });
 
             // Initialize the map view
             map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
-
-                 alert("map ready");
                 
                 map.getMyLocation(function(location) {
-
-                    alert("Sending location");
 
                     // change this to location to be real time
                     window.publish('location', [-33.885193, 151.209399]);
@@ -367,8 +365,6 @@ module.exports = (function() {
                     map.moveCamera({
                       'target': latLng,
                       'zoom': 12
-                    }, function () {
-                        updateMapData(map);
                     });
                     
                 });
@@ -399,24 +395,23 @@ module.exports = (function () {
         interval,
         get;
 
+    // users lat long
     poll = function (lat, lng, distance) {
         interval = setInterval(function () {
-            jsonpClient("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance + "&callback=updateFromNick", function (err, data) {
-                window.publish("update", [data]);
+            window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + distance, function (data) {
+                window.publish("update", [data, lat, lng, distance]);
             });
-        }, 1000);
+        }, 10000);
     };
 
     init = function (lat, lng) {
-
-        //alert(lat + "," + lng);
-
+         window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=5", function (data) {
+             window.publish("update", [data, lat, lng, "5"]);
+        });
         poll(lat, lng, "5");
-
-        //alert("init complete");
     };
 
-    distance = function (data) {
+    distance = function (data, lat, lng) {
         data.forEach(function (value, index, arr) {
             data[index].distance = helpers.distance(
                 value.location[0].latitude,
@@ -426,6 +421,7 @@ module.exports = (function () {
                 "K"
             );
         });
+        return data;
     };
 
     get = function () {
@@ -434,13 +430,14 @@ module.exports = (function () {
 
     // update distance on location change
     window.subscribe('location', function (lat, lng) {
-        //alert("location");
         init(lat, lng);
     });
 
     // update distance on location change
-    window.subscribe('update', function (data) {
-        window.publish('data', [distance(data.resultSet)]);
+    // pass in users lat long
+    window.subscribe('update', function (data, lat, lng) {
+        console.log("data", data);
+        window.publish('data', [distance(data.resultSet, lat, lng)]);
     });
 }());
 },{"./helpers":1}]},{},[1,2,4,5]);
