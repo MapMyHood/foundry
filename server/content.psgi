@@ -106,6 +106,7 @@ builder {
           root => "$root/public";
 
         enable "SimpleLogger", level => 'debug';
+        enable 'CrossOrigin', origins => '*';
 
         my $html = do {
             local $/;
