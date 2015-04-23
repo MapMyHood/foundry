@@ -58,11 +58,11 @@ body {
     display: none;
 }
 
-.icon {
+header .icon {
     color: #929292;
 }
 
-.icon.active {
+header .icon.active {
     color: #007aff;
 }
 

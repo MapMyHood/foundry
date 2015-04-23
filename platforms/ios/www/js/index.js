@@ -37,7 +37,7 @@ window.app = (function() {
         listView = document.querySelector("section.panel > .view-list");
 
     // list template
-    template = dot.template("<ul>{{~it.resultSet :value:index}}<li>{{=value.headline}}!</li>{{~}}</ul>");
+    template = dot.template('<ul>{{~it.resultSet :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="http://placehold.it/42x42"><div class="media-body">{{=value.headline}}<p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
         panelList.innerHTML = template(data);
@@ -126,36 +126,6 @@ window.app = (function() {
 
         render(model);
     };
-
-    /*
-        showSearch = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'block';
-        document.getElementById('settingsPanel').style.display = 'none';                
-    };
-
-    showMap = function() {
-        document.getElementById('mapPanel').style.display = 'block';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'none';                
-    };
-
-    showList = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'block';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'none';        
-    };
-
-    showSettings = function() {
-        document.getElementById('mapPanel').style.display = 'none';
-        document.getElementById('listPanel').style.display = 'none';
-        document.getElementById('searchPanel').style.display = 'none';
-        document.getElementById('settingsPanel').style.display = 'block';
-    };
-    */
 
     return {
         initialize: initialize
@@ -318,31 +288,44 @@ module.exports = (function() {
 
         render = function(selector) {
 
-            alert("Render map");
-
             var mapElem = document.getElementById(selector),
                 map = plugin.google.maps.Map.getMap();
 
             map.setDiv(mapElem);
-            /*var latLng = new plugin.google.maps.LatLng(
-                location.latLng.lat,
-                location.latLng.lng
-            );*/
-
-            map.setOptions({
-                'backgroundColor': 'white',
-                'camera': {
-                    'zoom': 16
-                }
-            });
-
 
             // Initialize the map view
-            /*map.getMyLocation(function(location) {
+            map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
+                
+                map.getMyLocation(function(location) {
 
-                alert("getting location");
+                    alert("getting location" + JSON.stringify(location));
 
-            });*/
+                    var latLng = new plugin.google.maps.LatLng(
+                        location.latLng.lat,
+                        location.latLng.lng
+                    );
+
+                    map.moveCamera({
+                      'target': latLng,
+                      'zoom': 17
+                    });
+
+                    map.addCircle({
+                        'center': latLng,
+                        'radius': 6,
+                        'strokeColor' : '#428bca',
+                        'strokeWidth': 1,
+                        'fillColor' : '#007aff'
+                    });
+
+                    // users location
+                    /*map.addMarker({
+                        'position': latLng,
+                        icon: 'img/svg/people.svg'
+                    });*/
+                });
+
+            });
 
         };
 
@@ -365,7 +348,7 @@ module.exports = (function () {
             headline: "Story One",
             standfirst: "Stand First One",
             url: "http://www.google.com.au?v=1",
-            location: "1,2",
+            location: "-33.884627, 151.209198",
             thumbnail: {
                 uri: "",
                 width: 100,
@@ -375,7 +358,7 @@ module.exports = (function () {
             headline: "Story Two",
             standfirst: "Stand First Two",
             url: "http://www.google.com.au?v=2",
-            location: "1,2",
+            location: "-33.886600, 151.208253",
             thumbnail: {
                 uri: "",
                 width: 100,
