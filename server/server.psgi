@@ -132,10 +132,10 @@ sub getContent {
           standfirst => elide($standfirst, 150, {at_space => 1}),
           paidStatus => 'NON_PREMIUM',
           originalSource => 'REA',
-          location => {
+          location => [{
             latitude => $listing->{address}->{location}->{latitude},
             longitude => $listing->{address}->{location}->{longitude}
-          },
+          }],
           thumbnail => {
             uri => $listing->{mainImage}->{server} . '/120x90' . $listing->{mainImage}->{uri},
             width => 120,
@@ -149,6 +149,40 @@ sub getContent {
   else {
     warn $res->status_line;
   }
+
+	# my $domain = 'search.gnip.com';
+	# my $username = 'rchoi+gnip@twitter.com';
+	# my $password = '#NewsFoundry';
+
+	# my $term = '#NewsFoundry';
+
+	# # uncomment below for tweets around News Corp 
+	# my $location = 'point_radius:[151.209212 -33.885537 5.0mi]';
+	# $term = $term . ' ' . $location;
+
+	# # below returns all tweets in last 30 days for rchoi
+	# $term = uri_escape($term);
+	# my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi.json?publisher=twitter&query=$term&maxResults=10";
+
+	# # below returns counts for term daily
+	# # my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi/counts.json?publisher=twitter&query=$term&bucket=day";
+
+	# my $req = GET $server_endpoint;
+	# $req->authorization_basic($username, $password);
+
+	# my $agent = LWP::UserAgent->new;
+	# my $resp = $agent->request($req); 
+
+	# if ($resp->is_success) {
+	# my $message = from_json($resp->decoded_content);
+	# #my $message = $resp->decoded_content;
+	# #print "Received reply: " . Dumper($message) . "\n";
+	# }
+	# else {
+	# print "HTTP GET error code: ", $resp->code, "\n";
+	# print "HTTP GET error message: ", $resp->message, "\n";
+	# print "HTTP GET error body: ", $resp->decoded_content, "\n";
+	# }
 
 
 $res2->{'resultSet'} = \@resset;
