@@ -13,6 +13,11 @@ BEGIN {
     use Data::Dumper;
     use MIME::Base64;
 
+    use LWP::UserAgent qw();
+    use JSON qw();
+    use URI::Escape qw(uri_escape);
+    use String::Truncate qw(elide);
+
     unshift @INC, "$root/../../lib";
 }
 
@@ -38,19 +43,6 @@ builder {
     mount '/socket.io' => PocketIO->new(
         handler => sub {
             my $self = shift;
-
-            $self->on(
-                'user message' => sub {
-                    my $self = shift;
-                    my ($message) = @_;
-
-                    $self->get('nick' => sub {
-                        my ($self, $err, $nick) = @_;
-
-                        $self->broadcast->emit('user message', $nick, $message);
-                    });
-                }
-            );
 
             $self->on(
                 'search' => sub {
