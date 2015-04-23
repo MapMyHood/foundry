@@ -1,3 +1,5 @@
 platforms/ios/cordova/console.log
 www
 server/rest-test.pl
+
+server/jsonout.json
