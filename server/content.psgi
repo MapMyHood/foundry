@@ -7,6 +7,12 @@ BEGIN {
     $root = File::Basename::dirname(__FILE__);
     $root = File::Spec->rel2abs($root);
 
+    use REST::Client;
+    use JSON;
+
+    use Data::Dumper;
+    use MIME::Base64;
+
     unshift @INC, "$root/../../lib";
 }
 
@@ -37,6 +43,20 @@ builder {
                 'user message' => sub {
                     my $self = shift;
                     my ($message) = @_;
+
+                    $self->get('nick' => sub {
+                        my ($self, $err, $nick) = @_;
+
+                        $self->broadcast->emit('user message', $nick, $message);
+                    });
+                }
+            );
+
+            $self->on(
+                'search' => sub {
+                    my $self = shift;
+                    my ($latlong,$radius) = @_;
+                    $message = getContent($latlong,$radius);
 
                     $self->get('nick' => sub {
                         my ($self, $err, $nick) = @_;
@@ -111,3 +131,57 @@ builder {
         };
     };
 };
+
+sub getContent {
+
+  my $latlong = $_[0];
+  my $distance = $_[1];
+  my $offset = $_[2];
+
+  my $headers = {Accept => 'application/json'};
+  my $client = REST::Client->new();
+
+
+  $client->setHost('http://cdn.newsapi.com.au');
+
+  $client->GET(
+      'content/v1/?format=json&geoDistance=' . $latlong . ":" . $distance . '&type=news_story&origin=methode&includeRelated=false&includeBodies=true&includeFutureDated=false&pageSize=2&offset=0&maxRelatedLevel=1&api_key=r7j3ufg79yqkpmszf73b8ked',
+      $headers
+  );
+
+  my $count = 0;
+  my $res;
+  my @resset;
+
+  my $response = from_json($client->responseContent());
+
+  my $results = $response->{'results'};
+
+  foreach $result (@$results){
+    my $resultSimple;
+    $resultSimple->{'headline'}            =  $result->{'title'};
+    $resultSimple->{'standfirst'}          =  $result->{'standFirst'};
+    $resultSimple->{'paidStatus'}          =  $result->{'paidStatus'};
+    $resultSimple->{'originalSource'}      =  'news';
+    $resultSimple->{'thumbnail'}{'uri'}    =  $result->{'thumbnailImage'}{'link'};
+    $resultSimple->{'thumbnail'}{'width'}  =  $result->{'thumbnailImage'}{'width'};
+    $resultSimple->{'thumbnail'}{'height'} =  $result->{'thumbnailImage'}{'height'};
+    $resultSimple->{'url'}                 = $result->{'link'};
+    $resultSimple->{'location'}            =  $result->{'locationGeoPoints'};
+
+    #print "Array: " . Dumper($resultSimple) . "\n";
+
+    $resset[$count] = $resultSimple;
+    #print "help " . $resset[$count] . "\n";
+    
+    $count++;
+
+  }
+$res->{'resultSet'} = \@resset;
+$res->{'resultSize'} = $count;
+
+#print "Hash: " . Dumper($res) . "\n";
+
+return (to_json($res));
+
+}
