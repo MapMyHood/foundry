@@ -6,6 +6,7 @@ use Data::Dumper qw(Dumper);
 use Data::Structure::Util qw/unbless/;
 use DateTime qw();
 use DateTime::Format::Strptime qw();
+use File::Stat;
 use HTTP::Headers;
 use HTTP::Request::Common; 
 use HTTP::Request; 
@@ -16,6 +17,7 @@ use MIME::Base64;
 use Plack::Builder;
 use Plack::Request;
 use REST::Client;
+use Storable;
 use String::Truncate qw(elide);
 use URI::Escape;
 use XML::Simple;
@@ -71,7 +73,6 @@ sub getContent {
       $headers
   );
 
-  my $count = 0;
   my @resset;
   my $res2;
 
@@ -93,11 +94,9 @@ sub getContent {
 
     #print "Array: " . Dumper($resultSimple) . "\n";
 
-    $resset[$count] = $resultSimple;
+    push @resset, $resultSimple;
     #print "help " . $resset[$count] . "\n";
     
-    $count++;
-
   }
 
   ## 
@@ -124,55 +123,61 @@ sub getContent {
 
   my $url = "${base}{$channel,$page,$pageSize,$filter,$radial}&api_key=$apiKey";
 
-  my $res = $ua->get($url);
+  my $reaResults = cache_get('rea');
 
-  if ($res->is_success) {
-    my $listings = $json->decode($res->content);
+  if (!defined $reaResults) {
+    my $res = $ua->get($url);
 
-    foreach my $listing (@{$listings->{tieredResults}->[0]->{results}}) {
-      next unless $listing->{inspectionsAndAuctions};
+    if ($res->is_success) {
+      my $listings = $json->decode($res->content);
 
-      foreach my $inspection (@{$listing->{inspectionsAndAuctions}}) {
-        # We only care about auctions
-        next unless $inspection->{auction};
+      foreach my $listing (@{$listings->{tieredResults}->[0]->{results}}) {
+        next unless $listing->{inspectionsAndAuctions};
 
-        # We only care about auctions in our specified radius
-        next unless (distance($lat, $long, $listing->{address}->{location}->{latitude}, $listing->{address}->{location}->{longitude}) <= $distance);
+        foreach my $inspection (@{$listing->{inspectionsAndAuctions}}) {
+          # We only care about auctions
+          next unless $inspection->{auction};
 
-        # We only care about auctions in the next week
-        my $auctionTime = $strp->parse_datetime($inspection->{startTime});
-        my $days = $auctionTime->subtract_datetime(DateTime->now());
-        next unless $days->in_units('days') <= 7;
+          # We only care about auctions in our specified radius
+          next unless (distance($lat, $long, $listing->{address}->{location}->{latitude}, $listing->{address}->{location}->{longitude}) <= $distance);
 
-        my $standfirst = $listing->{description};
-        $standfirst =~ s|<.+?>||g;
+          # We only care about auctions in the next week
+          my $auctionTime = $strp->parse_datetime($inspection->{startTime});
+          my $days = $auctionTime->subtract_datetime(DateTime->now());
+          next unless $days->in_units('days') <= 7;
 
-        push @resset, {
-          url => $listing->{'_links'}->{short}->{href},
-          headline => "Auction: " .
-                 $inspection->{dateDisplay} .
-                 ", " . $inspection->{startTimeDisplay} .
-                 ". " . $listing->{title},
-          standfirst => elide($standfirst, 150, {at_space => 1}),
-          paidStatus => 'NON_PREMIUM',
-          originalSource => 'REA',
-          location => [{
-            latitude => $listing->{address}->{location}->{latitude},
-            longitude => $listing->{address}->{location}->{longitude}
-          }],
-          thumbnail => {
-            uri => $listing->{mainImage}->{server} . '/120x90' . $listing->{mainImage}->{uri},
-            width => 120,
-            height => 90,
-          }
-        };
-        $count++;
+          my $standfirst = $listing->{description};
+          $standfirst =~ s|<.+?>||g;
+
+          push @$reaResults, {
+            url => $listing->{'_links'}->{short}->{href},
+            headline => "Auction: " .
+                   $inspection->{dateDisplay} .
+                   ", " . $inspection->{startTimeDisplay} .
+                   ". " . $listing->{title},
+            standfirst => elide($standfirst, 150, {at_space => 1}),
+            paidStatus => 'NON_PREMIUM',
+            originalSource => 'REA',
+            location => [{
+              latitude => $listing->{address}->{location}->{latitude},
+              longitude => $listing->{address}->{location}->{longitude}
+            }],
+            thumbnail => {
+              uri => $listing->{mainImage}->{server} . '/120x90' . $listing->{mainImage}->{uri},
+              width => 120,
+              height => 90,
+            }
+          };
+        }
       }
+      cache_set('rea', $reaResults);
+    }
+    else {
+      warn $res->status_line;
     }
   }
-  else {
-    warn $res->status_line;
-  }
+
+  push (@resset, @$reaResults);
 
   ##
   # Add in the traffic info
@@ -203,7 +208,6 @@ sub getContent {
             height => 90,
           }
         };
-        $count++;
       }
     }
   }
@@ -260,8 +264,6 @@ sub getContent {
             height => 100,
           }
         };
-        $count++;
-
     }
 
 	#my $message = $resp->decoded_content;
@@ -301,7 +303,6 @@ sub getContent {
             height => $event->{image}->{medium}->{height},
           }
         };
-        $count++;
     }
   }
   else {
@@ -310,7 +311,7 @@ sub getContent {
 
 
 $res2->{'resultSet'} = \@resset;
-$res2->{'resultSize'} = $count;
+$res2->{'resultSize'} = scalar @resset;
 
 #print "Hash: " . Dumper($res2) . "\n";
 
@@ -345,4 +346,23 @@ sub rad2deg {
   my ($rad) = @_;
   my $pi = atan2(1,1) * 4;
   return ($rad * 180 / $pi);
+}
+
+sub cache_get {
+  my ($source) = @_;
+
+  my $filename = "$source.storable";
+
+  # Cache expiry set to 1 hour
+  if (-e $filename && stat($filename)->mtime >= (time() - 3600)) {
+    $arrayref = retrieve($filename);
+  }
+  return $arrayref;
+}
+
+sub cache_set {
+  my ($source, $data) = @_;
+
+  my $filename = "$source.storable";
+  store($data, $filename)
 }
