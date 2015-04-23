@@ -18,6 +18,7 @@ use Plack::Request;
 use REST::Client;
 use String::Truncate qw(elide);
 use URI::Escape;
+use XML::Simple;
 $Data::Dumper::Sortkeys = 1;
  
 my $app = sub {
@@ -268,6 +269,44 @@ sub getContent {
 	}
 	else {
 	}
+
+  ## Add Eventful events
+
+
+  my $eventurl = "http://api.eventful.com/rest/events/search?app_key=DwG227bNxf2ZXbSS&keywords=books&location=$lat,$long&within=$distance&units=km&date=This+Week&page_size=50";
+
+  $res = $ua->get($eventurl);
+
+  if ($res->is_success) {
+    my $xs = XML::Simple->new();    
+    my $events = $xs->XMLin($res->content);
+
+    foreach my $event (values %{$events->{events}->{event}}) {
+      my $description = $event->{description};
+      $description =~ s|<.+?>||g;
+
+        push @resset, {
+          url => $event->{url},
+          headline => $event->{title},
+          standfirst => elide($description, 150, {at_space => 1}),
+          paidStatus => 'NON_PREMIUM',
+          originalSource => 'EVENTFUL',
+          location => [{
+            latitude => $event->{latitude},
+            longitude => $event->{longitude}
+          }],
+          thumbnail => {
+            uri => $event->{image}->{medium}->{url},
+            width => $event->{image}->{medium}->{width},
+            height => $event->{image}->{medium}->{height},
+          }
+        };
+        $count++;
+    }
+  }
+  else {
+    warn $res->status_line;
+  }
 
 
 $res2->{'resultSet'} = \@resset;
