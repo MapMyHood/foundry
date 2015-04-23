@@ -2,30 +2,22 @@
 #use strict;
 use warnings;
 
-use Plack::Request;
-use Plack::Builder;
-use REST::Client;
-use JSON;
-
-use Data::Dumper;
-use MIME::Base64;
-
-use LWP::UserAgent qw();
-use JSON qw();
+use Data::Dumper qw(Dumper);
 use Data::Structure::Util qw/unbless/;
-use URI::Escape qw(uri_escape);
-use String::Truncate qw(elide);
-
+use DateTime qw();
+use DateTime::Format::Strptime qw();
+use HTTP::Headers;
+use HTTP::Request::Common; 
+use HTTP::Request; 
+use JSON;
 use LWP::Simple; 
 use LWP::UserAgent; 
-use HTTP::Request; 
-use HTTP::Request::Common; 
+use MIME::Base64;
+use Plack::Builder;
+use Plack::Request;
+use REST::Client;
+use String::Truncate qw(elide);
 use URI::Escape;
-use Data::Dumper;
-use JSON;
-use HTTP::Headers;
- 
-use Data::Dumper qw(Dumper);
 $Data::Dumper::Sortkeys = 1;
  
 my $app = sub {
@@ -113,6 +105,11 @@ sub getContent {
 
   my $ua = LWP::UserAgent->new;
   my $json = JSON->new;
+  my $strp = DateTime::Format::Strptime->new(
+        pattern   => '%Y-%m-%dT%H:%M:%S',
+        locale    => 'en_AU',
+        time_zone => 'Australia/Sydney',
+  );
 
   my $base = 'http://trial1060.api.mashery.com/v1/services/listings/search?query=';
   my $apiKey = 'ug5ddujnfet3vuahkwra8ua8';
@@ -135,17 +132,26 @@ sub getContent {
       next unless $listing->{inspectionsAndAuctions};
 
       foreach my $inspection (@{$listing->{inspectionsAndAuctions}}) {
+        # We only care about auctions
         next unless $inspection->{auction};
 
-        my $standfirst = "Auction on " .
-                 $inspection->{dateDisplay} .
-                 " at " . $inspection->{startTimeDisplay} .
-                 ". " . $listing->{description};
+        # We only care about auctions in our specified radius
+        next unless (distance($lat, $long, $listing->{address}->{location}->{latitude}, $listing->{address}->{location}->{longitude}) <= $distance);
+
+        # We only care about auctions in the next week
+        my $auctionTime = $strp->parse_datetime($inspection->{startTime});
+        my $days = $auctionTime->subtract_datetime(DateTime->now());
+        next unless $days->in_units('days') <= 7;
+
+        my $standfirst = $listing->{description};
         $standfirst =~ s|<.+?>||g;
 
         push @resset, {
           url => $listing->{'_links'}->{short}->{href},
-          headline => $listing->{title},
+          headline => "Auction: " .
+                 $inspection->{dateDisplay} .
+                 ", " . $inspection->{startTimeDisplay} .
+                 ". " . $listing->{title},
           standfirst => elide($standfirst, 150, {at_space => 1}),
           paidStatus => 'NON_PREMIUM',
           originalSource => 'REA',
