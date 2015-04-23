@@ -33,18 +33,25 @@
     </head>
     <body>
         <header class="bar bar-nav">
-            <a id="btn-search" class="icon icon icon-search pull-left"></a>
-            <a id="btn-toggle" class="icon icon-list pull-left"></a>
+            <button id="btn-toggle-view" class="btn pull-left">List</button>
             <a id="btn-settings" class="icon icon-gear pull-right"></a>
             <h1 class="title">Map My Hood</h1>
         </header>
         
         <section class="panel panel-map">
+            <div class="view view-list hidden">
+            </div>
+            <div class="view view-map">
+            </div>
         </section>
-        <section class="panel panel-list hidden">
-            <ul></ul>
-        </section>
-        <section id="searchPanel" class="panel panel-search  hidden">
+
+        <section id="settingsPanel" class="panel panel-settings hidden">
+            <div class="toggle active">
+                <div class="toggle-handle"></div>
+            </div>
+            <div class="toggle">
+                <div class="toggle-handle"></div>
+            </div>
             <form>
                 <input type="search" placeholder="Search">
                 <button class="btn btn-positive btn-block">Set Location</button>
@@ -65,15 +72,6 @@
                     <li><img src="http://placehold.it/100x100"></li> 
                 </ul>               
             </div>      
-        </section>   
-
-        <section id="settingsPanel" class="panel panel-settings hidden">
-            <div class="toggle active">
-                <div class="toggle-handle"></div>
-            </div>
-            <div class="toggle">
-                <div class="toggle-handle"></div>
-            </div>
         </section>    
 
         <footer>
@@ -95,7 +93,7 @@
 
         <script>
             (function () {
-                var elem = document.querySelector("section.panel-map");
+                var elem = document.querySelector("section.panel-map > div.view-map");
                     elem.innerHTML = '<div id="map_canvas" style="width:100%; height:'+(window.innerHeight-60)+'px"></div>'
             }());
         </script>

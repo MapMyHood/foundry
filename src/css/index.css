@@ -54,6 +54,18 @@ body {
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
 }
 
+.hidden {
+    display: none;
+}
+
+.icon {
+    color: #929292;
+}
+
+.icon.active {
+    color: #007aff;
+}
+
 /* Fix for status bar */
 header.bar-nav {
     top: 20px !important;
@@ -63,14 +75,18 @@ section.panel {
     top: 64px;
     left: 0;
     position: absolute;
+    background: white;
 }
 section.panel.hidden {
     display: none;
     visibility: hidden;
 }
-section.panel-map {
+section.panel > .view-map {
     background: green;
 }
-section.panel-list {
+section.panel > .view-list {
     background: blue;
+}
+section > .view {
+    height: 100%;
 }

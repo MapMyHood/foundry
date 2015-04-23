@@ -26,14 +26,14 @@ window.app = (function() {
     var initialize,
         bindEvents,
         onDeviceReady,
-        toggleMapView,
         togglePanel,
+        toggleView,
         render,
         displayStack =[],
         template,
         panels = document.querySelectorAll("section.panel"),
-        panelMap = document.querySelector("section.panel.panel-map"),
-        panelList = document.querySelector("section.panel.panel-list");
+        mapView = document.querySelector("section.panel > .view-map"),
+        listView = document.querySelector("section.panel > .view-list");
 
     // list template
     template = dot.template("<ul>{{~it.resultSet :value:index}}<li>{{=value.headline}}!</li>{{~}}</ul>");
@@ -42,9 +42,19 @@ window.app = (function() {
         panelList.innerHTML = template(data);
     };
 
-    toggleMapView = function () {
-        panelMap.classList.toggle("hidden");
-        panelList.classList.toggle("hidden");
+    toggleView = function (btn) {
+
+        if (mapView.classList.contains("hidden")) {
+            btn.innerHTML = "List";
+            listView.classList.add("hidden");
+            mapView.classList.remove("hidden");
+
+        } else {
+            listView.classList.remove("hidden");
+            btn.innerHTML = "Map";
+            mapView.classList.add("hidden");
+        }
+
     };
 
     togglePanel = function (name) {
@@ -52,17 +62,10 @@ window.app = (function() {
             targetPanel = document.querySelector("section.panel-" + name),
             len = panels.length;
 
-        // keep last active panel
-        displayStack.push(document.querySelector("section.panel:not(.hidden)"));
-
         if (targetPanel.classList.contains("hidden")) {
-            while (len--) {
-                panels[len].classList.add("hidden");
-            }
             targetPanel.classList.remove("hidden");
         } else {
             targetPanel.classList.add("hidden");
-            displayStack.pop().classList.remove("hidden");
         }
         
     };
@@ -85,25 +88,29 @@ window.app = (function() {
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents = function() {
 
-        var btnToggle   = document.getElementById("btn-toggle"),
+        var btnToggle   = document.getElementById("btn-toggle-view"),
             btnSettings = document.getElementById("btn-settings"),
-            btnSearch   = document.getElementById("btn-search"),
             btnNews     = document.getElementById("btn-news"),
             btnAlerts   = document.getElementById("btn-alerts"),
             btnOffers   = document.getElementById("btn-offers");
 
         document.addEventListener('deviceready', onDeviceReady, false);
 
-        btnToggle.addEventListener("touchstart", function () {
-            toggleMapView('');
+        btnToggle.addEventListener("touchstart", function (e) {
+            //togglePanel('map');
+            e.preventDefault();
+            e.stopPropagation();
+            toggleView(e.target);
         }, false);
 
         btnSettings.addEventListener("touchstart", function () {
             togglePanel('settings');
-        }, false);
 
-        btnSearch.addEventListener("touchstart", function () {
-            togglePanel('search');
+            // highlight with color
+            btnSettings.classList.toggle("active");
+
+            // hide map view
+            btnToggle.classList.toggle("hidden");
         }, false);
 
     };
