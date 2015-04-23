@@ -15,6 +15,15 @@ use JSON qw();
 use Data::Structure::Util qw/unbless/;
 use URI::Escape qw(uri_escape);
 use String::Truncate qw(elide);
+
+use LWP::Simple; 
+use LWP::UserAgent; 
+use HTTP::Request; 
+use HTTP::Request::Common; 
+use URI::Escape;
+use Data::Dumper;
+use JSON;
+use HTTP::Headers;
  
 use Data::Dumper qw(Dumper);
 $Data::Dumper::Sortkeys = 1;
@@ -150,39 +159,64 @@ sub getContent {
     warn $res->status_line;
   }
 
-	# my $domain = 'search.gnip.com';
-	# my $username = 'rchoi+gnip@twitter.com';
-	# my $password = '#NewsFoundry';
+	my $domain = 'search.gnip.com';
+	my $username = 'rchoi+gnip@twitter.com';
+	my $password = '#NewsFoundry';
 
-	# my $term = '#NewsFoundry';
+	my $term = '#NewsFoundry';
 
-	# # uncomment below for tweets around News Corp 
-	# my $location = 'point_radius:[151.209212 -33.885537 5.0mi]';
-	# $term = $term . ' ' . $location;
+	# uncomment below for tweets around News Corp 
+	my $location = 'point_radius:[151.209212 -33.885537 5.0mi]';
+	$term = $term . ' ' . $location;
 
-	# # below returns all tweets in last 30 days for rchoi
-	# $term = uri_escape($term);
-	# my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi.json?publisher=twitter&query=$term&maxResults=10";
+	# below returns all tweets in last 30 days for rchoi
+	$term = uri_escape($term);
+	my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi.json?publisher=twitter&query=$term&maxResults=10";
 
-	# # below returns counts for term daily
-	# # my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi/counts.json?publisher=twitter&query=$term&bucket=day";
+	# below returns counts for term daily
+	# my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi/counts.json?publisher=twitter&query=$term&bucket=day";
 
-	# my $req = GET $server_endpoint;
-	# $req->authorization_basic($username, $password);
+	my $req = GET $server_endpoint;
+	$req->authorization_basic($username, $password);
 
-	# my $agent = LWP::UserAgent->new;
-	# my $resp = $agent->request($req); 
+	my $agent = LWP::UserAgent->new;
+	my $resp = $agent->request($req); 
 
-	# if ($resp->is_success) {
-	# my $message = from_json($resp->decoded_content);
-	# #my $message = $resp->decoded_content;
-	# #print "Received reply: " . Dumper($message) . "\n";
-	# }
-	# else {
-	# print "HTTP GET error code: ", $resp->code, "\n";
-	# print "HTTP GET error message: ", $resp->message, "\n";
-	# print "HTTP GET error body: ", $resp->decoded_content, "\n";
-	# }
+	if ($resp->is_success) {
+	my $message = from_json($resp->decoded_content);
+
+	my $results = $message->{'results'};
+
+  foreach my $result (@$results){
+
+	push @resset, {
+          url => $result->{'link'},
+          headline => $result->{'object'}{'summary'},
+          standfirst => '',
+          paidStatus => 'NON_PREMIUM',
+          originalSource => 'twitter',
+          location => [{
+            latitude => '',
+            longitude => ''
+          }],
+          thumbnail => {
+            uri => '',
+            width => 120,
+            height => 90,
+          }
+        };
+        $count++;
+
+    }
+
+	#my $message = $resp->decoded_content;
+	#print "Received reply: " . Dumper($message) . "\n";
+	}
+	else {
+	#print "HTTP GET error code: ", $resp->code, "\n";
+	#print "HTTP GET error message: ", $resp->message, "\n";
+	#print "HTTP GET error body: ", $resp->decoded_content, "\n";
+	}
 
 
 $res2->{'resultSet'} = \@resset;
