@@ -36,7 +36,7 @@ window.app = (function() {
         panelList = document.querySelector("section.panel.panel-list");
 
     // list template
-    template = dot.template("<ul>{{~it.resultSet :value:index}}<li>{{=value.headline}}!</li>{{~}}</ul>");
+    template = dot.template("<ul>{{~it.resultSet :value:index}}<li class=\"table-view-cell media\"><a class=\"navigate-right\"><img class=\"media-object pull-left\" src=\"http://placehold.it/42x42\"><div class=\"media-body\">{{=value.headline}}<p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>");
 
     render = function (data) {
         panelList.innerHTML = template(data);
