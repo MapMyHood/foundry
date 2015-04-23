@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use Plack::Request;
+use Plack::Builder;
 use REST::Client;
 use JSON;
 
@@ -39,6 +40,11 @@ my $app = sub {
     [ 'Content-Type' => 'text/json' ],
     [ $html ],
   ];
+};
+
+builder {
+	enable "JSONP", callback_key => 'callback';
+	$app;
 };
 
 sub getContent {
