@@ -84,9 +84,6 @@ section.panel.hidden {
 section.panel > .view-map {
     background: green;
 }
-section.panel > .view-list {
-    background: blue;
-}
 section > .view {
     height: 100%;
 }
