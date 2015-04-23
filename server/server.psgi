@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-use strict;
+#use strict;
 use warnings;
 
 use Plack::Request;
@@ -30,19 +30,20 @@ $Data::Dumper::Sortkeys = 1;
  
 my $app = sub {
   my $env = shift;
-  my ($html, $latlong,$dist);
+  my ($html,$dist,$latlong);
 
   my $request = Plack::Request->new($env);
  
   if ($request->param('latlong')) {
-      $latlong =  $request->param('latlong');
+      $latlong = $request->param('latlong');
   }
 
   if ($request->param('dist')) {
       $dist =  $request->param('dist');
   }
 
-  $html = getContent($latlong,$dist);
+  my @vals1 = split(',',$latlong);
+  $html = getContent($vals1[0],$vals1[1],$dist);
 
   return [
     '200',
@@ -58,18 +59,22 @@ builder {
 
 sub getContent {
 
-  my $latlong = $_[0];
-  my $distance = $_[1];
-  my $offset = $_[2];
+  my $lat      = $_[0];
+  my $long     = $_[1];
+  my $distance = $_[2];
+  my $offset   = $_[3];
 
   my $headers = {Accept => 'application/json'};
   my $client = REST::Client->new();
 
+  ##
+  # Get the CAPI data
+  ##
 
   $client->setHost('http://cdn.newsapi.com.au');
 
   $client->GET(
-      'content/v1/?format=json&geoDistance=' . $latlong . ":" . $distance . '&type=news_story&origin=methode&includeRelated=false&includeBodies=true&includeFutureDated=false&pageSize=10&offset=0&maxRelatedLevel=1&api_key=r7j3ufg79yqkpmszf73b8ked',
+      'content/v1/?format=json&geoDistance=' . $lat . ',' . $long . ":" . $distance . '&type=news_story&origin=methode&includeRelated=false&includeBodies=true&includeFutureDated=false&pageSize=10&offset=0&maxRelatedLevel=1&api_key=r7j3ufg79yqkpmszf73b8ked',
       $headers
   );
 
@@ -102,7 +107,10 @@ sub getContent {
 
   }
 
-  ## Add the REA stuff in
+  ## 
+  # Add the REA stuff in
+  ##
+
   my $ua = LWP::UserAgent->new;
   my $json = JSON->new;
 
@@ -114,7 +122,7 @@ sub getContent {
   my $page = uri_escape('"page":"' . $pageNum . '"');
   my $pageSize = uri_escape('"pageSize":"20"');
   my $filter = uri_escape('"filters":{"surroundingSuburbs":false}');
-  my $radial = uri_escape('"radialSearch":{"center":[' . "$latlong" . ']}');
+  my $radial = uri_escape('"radialSearch":{"center":[' . "$lat,$long" . ']}');
 
   my $url = "${base}{$channel,$page,$pageSize,$filter,$radial}&api_key=$apiKey";
 
@@ -159,6 +167,44 @@ sub getContent {
     warn $res->status_line;
   }
 
+  ##
+  # Add in the traffic info
+  ##
+
+  my $incidentsUrl = 'http://livetraffic.rta.nsw.gov.au/traffic/hazards/incident-open.json';
+
+  $res = $ua->get($incidentsUrl);
+
+  if ($res->is_success) {
+    my $incidents = $json->decode($res->content);
+
+    foreach my $incident (@{$incidents->{features}}) {
+      if (distance($lat, $long, $incident->{geometry}->{coordinates}->[1], $incident->{geometry}->{coordinates}->[0]) <= $distance) {
+        push @resset, {
+          url => 'https://www.livetraffic.com/',
+          headline => $incident->{properties}->{displayName},
+          standfirst => $incident->{properties}->{headline},
+          paidStatus => 'NON_PREMIUM',
+          originalSource => 'traffic',
+          location => {
+            latitude => $incident->{geometry}->{coordinates}->[1],
+            longitude => $incident->{geometry}->{coordinates}->[0]
+          },
+          thumbnail => {
+            uri => 'http://placehold.it/120x90',
+            width => 120,
+            height => 90,
+          }
+        };
+        $count++;
+      }
+    }
+  }
+
+  ##
+  # Add the tweets
+  ##
+
 	my $domain = 'search.gnip.com';
 	my $username = 'rchoi+gnip@twitter.com';
 	my $password = '#NewsFoundry';
@@ -166,7 +212,9 @@ sub getContent {
 	my $term = '#NewsFoundry';
 
 	# uncomment below for tweets around News Corp 
-	my $location = 'point_radius:[151.209212 -33.885537 5.0mi]';
+
+	my $location = 'point_radius:[' . $long . ' ' . $lat . ' 5.0mi]';
+	#$res2->{'locaton'} =  $location;
 	$term = $term . ' ' . $location;
 
 	# below returns all tweets in last 30 days for rchoi
@@ -192,17 +240,17 @@ sub getContent {
 	push @resset, {
           url => $result->{'link'},
           headline => $result->{'object'}{'summary'},
-          standfirst => '',
+          standfirst => $result->{'object'}{'summary'},
           paidStatus => 'NON_PREMIUM',
           originalSource => 'twitter',
           location => [{
-            latitude => '',
-            longitude => ''
+            latitude => $result->{'geo'}{'coordinates'}[0],
+            longitude => $result->{'geo'}{'coordinates'}[1]
           }],
           thumbnail => {
-            uri => '',
-            width => 120,
-            height => 90,
+            uri => $result->{'actor'}{'image'},
+            width => 100,
+            height => 100,
           }
         };
         $count++;
@@ -213,9 +261,6 @@ sub getContent {
 	#print "Received reply: " . Dumper($message) . "\n";
 	}
 	else {
-	#print "HTTP GET error code: ", $resp->code, "\n";
-	#print "HTTP GET error message: ", $resp->message, "\n";
-	#print "HTTP GET error body: ", $resp->decoded_content, "\n";
 	}
 
 
@@ -226,4 +271,33 @@ $res2->{'resultSize'} = $count;
 
 return (to_json($res2));
 
+}
+
+sub distance {
+  my ($lat1, $lon1, $lat2, $lon2) = @_;
+  my $theta = $lon1 - $lon2;
+  my $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+    $dist  = acos($dist);
+    $dist = rad2deg($dist);
+    $dist = $dist * 60 * 1.1515;
+    $dist = $dist * 1.609344;
+  return ($dist);
+}
+
+sub acos {
+  my ($rad) = @_;
+  my $ret = atan2(sqrt(1 - $rad**2), $rad);
+  return $ret;
+}
+
+sub deg2rad {
+  my ($deg) = @_;
+  my $pi = atan2(1,1) * 4;
+  return ($deg * $pi / 180);
+}
+
+sub rad2deg {
+  my ($rad) = @_;
+  my $pi = atan2(1,1) * 4;
+  return ($rad * 180 / $pi);
 }
