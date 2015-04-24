@@ -11,6 +11,7 @@ module.exports = (function () {
         interval,
         get;
 
+    window.settings = window.settings || {};
     getDistance = function () {
         try {
             return document.getElementById("distance").value;
@@ -54,6 +55,7 @@ module.exports = (function () {
                 lng,
                 "K"
             );
+
         });
         return data;
     };
@@ -70,7 +72,7 @@ module.exports = (function () {
     // update distance on location change
     // pass in users lat long
     window.subscribe('update', function (data, lat, lng) {
-        console.log("data", data);
+      //  console.log("data", data);
         setTimeout(function () {
             window.publish('data', [preProcess(data.resultSet, lat, lng)]);
         }, 0);

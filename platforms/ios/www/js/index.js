@@ -83,11 +83,11 @@ window.app = (function() {
         listView = document.querySelector("section.panel > .view-list");
 
     // list template
-    template = dot.template('<ul class="table-view">{{~it :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<br /><button class="btn btn-primary btn-outlined">{{=value.distance}} kms</button><br /><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
+    template = dot.template('<ul class="table-view">{{~it :value:index}}<li class="table-view-cell media"><a class="navigate-right" href="{{=value.url}}" target="_blank"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<br /><button class="btn btn-primary btn-outlined">{{=value.distance}} kms</button>&nbsp;<button class="btn btn-primary btn-outlined">{{=value.originalSource}}</button><br /><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
        // alert("Render list data");
-        console.log(template(data));
+        //console.log(template(data));
         listView.innerHTML = template(data);
     };
 
@@ -124,6 +124,8 @@ window.app = (function() {
         
     };
 
+    window.settings = window.settings || {};
+
     // Application Constructor
     initialize = function() {
         var panels = document.querySelectorAll("section.panel"),    
@@ -134,6 +136,13 @@ window.app = (function() {
         }
 
         bindEvents();
+
+        window.settings = window.settings || {};
+        window.settings.categories = [
+            'news',
+            'alerts',
+            'whatson'
+        ];
     };
 
     // Bind Event Listeners
@@ -155,9 +164,11 @@ window.app = (function() {
 
         document.addEventListener('deviceready', onDeviceReady, false);
 
-        // html slider distance
-        sliderDistance.addEventListener("input", function () {
-
+        btnLogin.addEventListener("touchstart", function () {
+            togglePanel('login');
+            btnToggle.classList.toggle("hidden");
+            btnSettings.classList.toggle("hidden");
+            mapView.classList.toggle("hidden");
         });
         
 
@@ -169,15 +180,32 @@ window.app = (function() {
         
         btnNews.addEventListener("touchstart", function () {
             clearFooterTabs();
-            btnNews.classList.add("active");
+            btnNews.classList.toggle("active");
+            
+            if (window.settings.categories.indexOf("news") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("news"), 1);
+            } else {
+                window.settings.categories.push("news");
+            }
+
         });
         btnOffers.addEventListener("touchstart", function () {
             clearFooterTabs();
-            btnOffers.classList.add("active");
+            btnOffers.classList.toggle("active");
+            if (window.settings.categories.indexOf("whatson") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("whatson"), 1);
+            } else {
+                window.settings.categories.push("whatson");
+            }
         });
         btnAlerts.addEventListener("touchstart", function () {
             clearFooterTabs();
-            btnAlerts.classList.add("active");
+            btnAlerts.classList.toggle("active");
+            if (window.settings.categories.indexOf("alerts") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("alerts"), 1);
+            } else {
+                window.settings.categories.push("alerts");
+            }
         });
 
         btnToggle.addEventListener("touchstart", function (e) {
@@ -373,6 +401,8 @@ module.exports = (function() {
             alerts: ''
         };
 
+    window.settings = window.settings || {};
+
     newMap = function() {
 
         var render,
@@ -410,6 +440,8 @@ module.exports = (function() {
             };
 
             markerExists = function (url) {
+                console.log("Hash code", helpers.hashCode(url));
+                console.log("markers", markers);
                 return !!markers[helpers.hashCode(url)] || false;
             };
 
@@ -417,26 +449,75 @@ module.exports = (function() {
 
             window.subscribe('data', function (data) {
                 
-                var len = data.length;
+                var len = data.length,
+                    correctPin,
+                    sources = {
+                        'news': true,
+                        'rea': true,
+                        'traffic': true,
+                        'twitter': true,
+                        'eventful': true,
+                        'shopping': true
+                    };
+
+                // check if category is green lit
+
+                if (window.settings.categories.indexOf("news") === -1) {
+                    sources.news = false;
+                    sources.rea = false;
+                    sources.twitter = false;
+                }
+                if (window.settings.categories.indexOf("alerts") === -1) {
+                    sources.traffic = false;
+                }
+                if (window.settings.categories.indexOf("whatson") === -1) {
+                    sources.eventful = false;
+                    sources.shopping = false;
+                }
                 
                 while (len--) {
 
                     // check if marker exists
+
                     if (markerExists(data[len].url)) {
                         console.log("marker exists");
                     } else {
-                        map.addMarker({
-                            icon: pins[data[len].originalSource.toLowerCase()],
-                            snippet: data[len].url,
-                            animation: plugin.google.maps.Animation.BOUNCE,
-                            title: data[len].headline,
-                            'position': new plugin.google.maps.LatLng(
-                                data[len].location[0].latitude,
-                                data[len].location[0].longitude
-                            ),
-                        }, function (marker) {
-                            markers[helpers.hashCode(marker.getSnippet())] = marker;
-                        });
+
+                        // check if source is enabled
+
+                        // get the right pin
+                        correctPin = data[len].originalSource.toLowerCase() || "";
+                        if (correctPin === "eventful") {
+                            correctPin = "whatson";
+                        }
+                        if (correctPin === "traffic") {
+                            correctPin = "alerts]";
+                        }
+                        if (correctPin === "shopping") {
+                            correctPin = "whatson";
+                        }
+
+                        if (sources[data[len].originalSource.toLowerCase()]) {
+                            map.addMarker({
+                                icon: pins[correctPin],
+                                snippet: data[len].url,
+                                animation: plugin.google.maps.Animation.BOUNCE,
+                                title: data[len].headline,
+                                'position': new plugin.google.maps.LatLng(
+                                    data[len].location[0].latitude,
+                                    data[len].location[0].longitude
+                                ),
+                            }, function (marker) {
+                                marker.addEventListener(plugin.google.maps.event.INFO_CLICK, function() {
+                                   window.open(marker.getSnippet(), "_new");
+                                });
+                                console.log("Saving marker to", helpers.hashCode(marker.getSnippet()));
+                                markers[helpers.hashCode(marker.getSnippet())] = [
+                                    marker,
+                                    sources[data[len].originalSource.toLowerCase()]
+                                ];
+                            });
+                        }
                     }
                 }
             });
@@ -451,7 +532,7 @@ module.exports = (function() {
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 14
+                      'zoom': 16
                     });
                     
                 });
@@ -484,6 +565,7 @@ module.exports = (function () {
         interval,
         get;
 
+    window.settings = window.settings || {};
     getDistance = function () {
         try {
             return document.getElementById("distance").value;
@@ -527,6 +609,7 @@ module.exports = (function () {
                 lng,
                 "K"
             );
+
         });
         return data;
     };
@@ -543,7 +626,7 @@ module.exports = (function () {
     // update distance on location change
     // pass in users lat long
     window.subscribe('update', function (data, lat, lng) {
-        console.log("data", data);
+      //  console.log("data", data);
         setTimeout(function () {
             window.publish('data', [preProcess(data.resultSet, lat, lng)]);
         }, 0);

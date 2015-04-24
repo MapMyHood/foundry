@@ -36,11 +36,11 @@ window.app = (function() {
         listView = document.querySelector("section.panel > .view-list");
 
     // list template
-    template = dot.template('<ul class="table-view">{{~it :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<br /><button class="btn btn-primary btn-outlined">{{=value.distance}} kms</button><br /><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
+    template = dot.template('<ul class="table-view">{{~it :value:index}}<li class="table-view-cell media"><a class="navigate-right" href="{{=value.url}}" target="_blank"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<br /><button class="btn btn-primary btn-outlined">{{=value.distance}} kms</button>&nbsp;<button class="btn btn-primary btn-outlined">{{=value.originalSource}}</button><br /><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
        // alert("Render list data");
-        console.log(template(data));
+        //console.log(template(data));
         listView.innerHTML = template(data);
     };
 
@@ -77,6 +77,8 @@ window.app = (function() {
         
     };
 
+    window.settings = window.settings || {};
+
     // Application Constructor
     initialize = function() {
         var panels = document.querySelectorAll("section.panel"),    
@@ -87,6 +89,13 @@ window.app = (function() {
         }
 
         bindEvents();
+
+        window.settings = window.settings || {};
+        window.settings.categories = [
+            'news',
+            'alerts',
+            'whatson'
+        ];
     };
 
     // Bind Event Listeners
@@ -108,9 +117,11 @@ window.app = (function() {
 
         document.addEventListener('deviceready', onDeviceReady, false);
 
-        // html slider distance
-        sliderDistance.addEventListener("input", function () {
-
+        btnLogin.addEventListener("touchstart", function () {
+            togglePanel('login');
+            btnToggle.classList.toggle("hidden");
+            btnSettings.classList.toggle("hidden");
+            mapView.classList.toggle("hidden");
         });
         
 
@@ -122,15 +133,32 @@ window.app = (function() {
         
         btnNews.addEventListener("touchstart", function () {
             clearFooterTabs();
-            btnNews.classList.add("active");
+            btnNews.classList.toggle("active");
+            
+            if (window.settings.categories.indexOf("news") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("news"), 1);
+            } else {
+                window.settings.categories.push("news");
+            }
+
         });
         btnOffers.addEventListener("touchstart", function () {
             clearFooterTabs();
-            btnOffers.classList.add("active");
+            btnOffers.classList.toggle("active");
+            if (window.settings.categories.indexOf("whatson") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("whatson"), 1);
+            } else {
+                window.settings.categories.push("whatson");
+            }
         });
         btnAlerts.addEventListener("touchstart", function () {
             clearFooterTabs();
-            btnAlerts.classList.add("active");
+            btnAlerts.classList.toggle("active");
+            if (window.settings.categories.indexOf("alerts") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("alerts"), 1);
+            } else {
+                window.settings.categories.push("alerts");
+            }
         });
 
         btnToggle.addEventListener("touchstart", function (e) {

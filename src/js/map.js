@@ -13,6 +13,8 @@ module.exports = (function() {
             alerts: ''
         };
 
+    window.settings = window.settings || {};
+
     newMap = function() {
 
         var render,
@@ -50,6 +52,8 @@ module.exports = (function() {
             };
 
             markerExists = function (url) {
+                console.log("Hash code", helpers.hashCode(url));
+                console.log("markers", markers);
                 return !!markers[helpers.hashCode(url)] || false;
             };
 
@@ -57,26 +61,75 @@ module.exports = (function() {
 
             window.subscribe('data', function (data) {
                 
-                var len = data.length;
+                var len = data.length,
+                    correctPin,
+                    sources = {
+                        'news': true,
+                        'rea': true,
+                        'traffic': true,
+                        'twitter': true,
+                        'eventful': true,
+                        'shopping': true
+                    };
+
+                // check if category is green lit
+
+                if (window.settings.categories.indexOf("news") === -1) {
+                    sources.news = false;
+                    sources.rea = false;
+                    sources.twitter = false;
+                }
+                if (window.settings.categories.indexOf("alerts") === -1) {
+                    sources.traffic = false;
+                }
+                if (window.settings.categories.indexOf("whatson") === -1) {
+                    sources.eventful = false;
+                    sources.shopping = false;
+                }
                 
                 while (len--) {
 
                     // check if marker exists
+
                     if (markerExists(data[len].url)) {
                         console.log("marker exists");
                     } else {
-                        map.addMarker({
-                            icon: pins[data[len].originalSource.toLowerCase()],
-                            snippet: data[len].url,
-                            animation: plugin.google.maps.Animation.BOUNCE,
-                            title: data[len].headline,
-                            'position': new plugin.google.maps.LatLng(
-                                data[len].location[0].latitude,
-                                data[len].location[0].longitude
-                            ),
-                        }, function (marker) {
-                            markers[helpers.hashCode(marker.getSnippet())] = marker;
-                        });
+
+                        // check if source is enabled
+
+                        // get the right pin
+                        correctPin = data[len].originalSource.toLowerCase() || "";
+                        if (correctPin === "eventful") {
+                            correctPin = "whatson";
+                        }
+                        if (correctPin === "traffic") {
+                            correctPin = "alerts]";
+                        }
+                        if (correctPin === "shopping") {
+                            correctPin = "whatson";
+                        }
+
+                        if (sources[data[len].originalSource.toLowerCase()]) {
+                            map.addMarker({
+                                icon: pins[correctPin],
+                                snippet: data[len].url,
+                                animation: plugin.google.maps.Animation.BOUNCE,
+                                title: data[len].headline,
+                                'position': new plugin.google.maps.LatLng(
+                                    data[len].location[0].latitude,
+                                    data[len].location[0].longitude
+                                ),
+                            }, function (marker) {
+                                marker.addEventListener(plugin.google.maps.event.INFO_CLICK, function() {
+                                   window.open(marker.getSnippet(), "_new");
+                                });
+                                console.log("Saving marker to", helpers.hashCode(marker.getSnippet()));
+                                markers[helpers.hashCode(marker.getSnippet())] = [
+                                    marker,
+                                    sources[data[len].originalSource.toLowerCase()]
+                                ];
+                            });
+                        }
                     }
                 }
             });
@@ -91,7 +144,7 @@ module.exports = (function() {
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 14
+                      'zoom': 16
                     });
                     
                 });
