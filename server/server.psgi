@@ -224,63 +224,66 @@ sub getContent {
   # Add the tweets
   ##
 
-	my $domain = 'search.gnip.com';
-	my $username = 'rchoi+gnip@twitter.com';
-	my $password = '#NewsFoundry';
+  my $tweetResults = cache_get('twitter', $lat, $long);
 
-	my $term = '#NewsFoundry';
+  if (!defined $tweetResults) {
 
-	# uncomment below for tweets around News Corp 
+  	my $domain = 'search.gnip.com';
+  	my $username = 'rchoi+gnip@twitter.com';
+  	my $password = '#NewsFoundry';
 
-	my $location = 'point_radius:[' . $long . ' ' . $lat . ' 5.0mi]';
-	#$res2->{'locaton'} =  $location;
-	$term = $term . ' ' . $location;
+  	my $term = '#NewsFoundry';
 
-	# below returns all tweets in last 30 days for rchoi
-	$term = uri_escape($term);
-	my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi.json?publisher=twitter&query=$term&maxResults=10";
+  	my $location = 'point_radius:[' . $long . ' ' . $lat . ' 3.0mi]';
+  	$term = $term . ' ' . $location;
 
-	# below returns counts for term daily
-	# my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi/counts.json?publisher=twitter&query=$term&bucket=day";
+  	# below returns all tweets in last 30 days for rchoi
+  	$term = uri_escape($term);
+  	my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi.json?publisher=twitter&query=$term&maxResults=10";
 
-	my $req = GET $server_endpoint;
-	$req->authorization_basic($username, $password);
+  	# below returns counts for term daily
+  	# my $server_endpoint = "https://$domain/accounts/dpr-content/search/choi/counts.json?publisher=twitter&query=$term&bucket=day";
 
-  $start = [gettimeofday()];
-	my $agent = LWP::UserAgent->new;
-	my $resp = $agent->request($req); 
-  print STDERR "Twitter API call took " . tv_interval($start) . "\n";
+  	my $req = GET $server_endpoint;
+  	$req->authorization_basic($username, $password);
 
-	if ($resp->is_success) {
-  	my $message = from_json($resp->decoded_content);
+    $start = [gettimeofday()];
+  	my $agent = LWP::UserAgent->new;
+  	my $resp = $agent->request($req); 
+    print STDERR "Twitter API call took " . tv_interval($start) . "\n";
 
-  	my $results = $message->{'results'};
+  	if ($resp->is_success) {
+    	my $message = from_json($resp->decoded_content);
 
-    foreach my $result (@$results){
+    	my $results = $message->{'results'};
 
-  	push @resset, {
-            url => $result->{'link'},
-            headline => $result->{'object'}{'summary'},
-            standfirst => $result->{'object'}{'summary'},
-            paidStatus => 'NON_PREMIUM',
-            originalSource => 'twitter',
-            location => [{
-              latitude => $result->{'geo'}{'coordinates'}[0],
-              longitude => $result->{'geo'}{'coordinates'}[1]
-            }],
-            thumbnail => {
-              uri => $result->{'actor'}{'image'},
-              width => 100,
-              height => 100,
-            }
-          };
-      }
+      foreach my $result (@$results){
 
-  	#my $message = $resp->decoded_content;
-  	#print "Received reply: " . Dumper($message) . "\n";
-	}
-	else {
-	}
+    	push @$tweetResults, {
+              url => $result->{'link'},
+              headline => $result->{'object'}{'summary'},
+              standfirst => $result->{'object'}{'summary'},
+              paidStatus => 'NON_PREMIUM',
+              originalSource => 'twitter',
+              location => [{
+                latitude => $result->{'geo'}{'coordinates'}[0],
+                longitude => $result->{'geo'}{'coordinates'}[1]
+              }],
+              thumbnail => {
+                uri => $result->{'actor'}{'image'},
+                width => 100,
+                height => 100,
+              }
+            };
+        }
+
+    	#my $message = $resp->decoded_content;
+    	#print "Received reply: " . Dumper($message) . "\n";
+      cache_set('twitter', $tweetResults, $lat, $long);
+  	}
+  	else {
+  	}
+  }
 
   ## Add Eventful events
 
@@ -318,7 +321,7 @@ sub getContent {
             }
           };
       }
-      cache_set('eventful', $eventResults, $lat, $long)
+      cache_set('eventful', $eventResults, $lat, $long);
     }
     else {
       print STDERR "Eventful failed: " . $res->status_line . "\n";
