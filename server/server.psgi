@@ -134,7 +134,7 @@ sub getContent {
 
   my $url = "${base}{$channel,$page,$pageSize,$filter,$radial}&api_key=$apiKey";
 
-  my $reaResults = cache_get('rea', $lat, $long);
+  my $reaResults = cache_get('rea', $lat, $long, $distance);
 
   if (!defined $reaResults) {
     $start = [gettimeofday()];
@@ -183,7 +183,7 @@ sub getContent {
           };
         }
       }
-      cache_set('rea', $reaResults, $lat, $long);
+      cache_set('rea', $reaResults, $lat, $long, $distance);
     }
     else {
       warn $res->status_line;
@@ -231,7 +231,7 @@ sub getContent {
   # Add the tweets
   ##
 
-  my $tweetResults = cache_get('twitter', $lat, $long);
+  my $tweetResults = cache_get('twitter', $lat, $long, $distance);
 
   if (!defined $tweetResults) {
 
@@ -286,7 +286,7 @@ sub getContent {
 
     	#my $message = $resp->decoded_content;
     	#print "Received reply: " . Dumper($message) . "\n";
-      cache_set('twitter', $tweetResults, $lat, $long);
+      cache_set('twitter', $tweetResults, $lat, $long, $distance);
   	}
   	else {
   	}
@@ -295,7 +295,7 @@ sub getContent {
 
   ## Add Eventful events
 
-  my $eventResults = cache_get('eventful', $lat, $long);
+  my $eventResults = cache_get('eventful', $lat, $long, $distance);
 
   if (!defined $eventResults) {
     my $eventurl = "http://api.eventful.com/rest/events/search?app_key=DwG227bNxf2ZXbSS&keywords=books&location=$lat,$long&within=$distance&units=km&date=This+Week&page_size=10";
@@ -314,7 +314,7 @@ sub getContent {
 
         my $eventImage;
         if ($event->{image}->{medium}->{url}) {
-            $eventImage = {
+            $eventIm  age = {
               uri => $event->{image}->{medium}->{url},
               width => $event->{image}->{medium}->{width},
               height => $event->{image}->{medium}->{height}
@@ -340,7 +340,7 @@ sub getContent {
           thumbnail => $eventImage
         };
       }
-      cache_set('eventful', $eventResults, $lat, $long);
+      cache_set('eventful', $eventResults, $lat, $long, $distance);
     }
     else {
       print STDERR "Eventful failed: " . $res->status_line . "\n";
@@ -352,7 +352,7 @@ sub getContent {
 
 ## add in localshoppa
 
-my $offerResults = cache_get('localshoppa', $lat, $long);
+my $offerResults = cache_get('localshoppa', $lat, $long, $distance);
 
 if (!defined $offerResults) {
   my $url = "http://api.localshoppa.com.au/2.0/55399b27333bfe0cfce9c0b0/Deal?latitude=$lat&order=closest&skip=0&radius=$distance&take=10&longitude=$long";
@@ -381,7 +381,7 @@ if (!defined $offerResults) {
             }
           };
       }
-      cache_set('localshoppa', $offerResults, $lat, $long);
+      cache_set('localshoppa', $offerResults, $lat, $long, $distance);
   }
   else {
     warn $res->status_line;
@@ -430,9 +430,9 @@ sub rad2deg {
 }
 
 sub cache_get {
-  my ($source, $lat, $long) = @_;
+  my ($source, $lat, $long, $distance) = @_;
 
-  my $filename = "$source-$lat-$long.storable";
+  my $filename = "$source-$lat-$long-$distance.storable";
   my $arrayref;
 
   # Cache expiry set to 1 hour
@@ -447,8 +447,8 @@ sub cache_get {
 }
 
 sub cache_set {
-  my ($source, $data, $lat, $long) = @_;
+  my ($source, $data, $lat, $long, $distance) = @_;
 
-  my $filename = "$source-$lat-$long.storable";
+  my $filename = "$source-$lat-$long-$distance.storable";
   store($data, $filename);
 }
