@@ -163,7 +163,7 @@ sub getContent {
                    ". " . $listing->{title},
             standfirst => elide($standfirst, 150, {at_space => 1}),
             paidStatus => 'NON_PREMIUM',
-            originalSource => 'REA',
+            originalSource => 'rea',
             location => [{
               latitude => $listing->{address}->{location}->{latitude},
               longitude => $listing->{address}->{location}->{longitude}
@@ -310,7 +310,7 @@ sub getContent {
             headline => $event->{title},
             standfirst => elide($description, 150, {at_space => 1}),
             paidStatus => 'NON_PREMIUM',
-            originalSource => 'EVENTFUL',
+            originalSource => 'eventful',
             location => [{
               latitude => $event->{latitude},
               longitude => $event->{longitude}
@@ -351,7 +351,7 @@ if (!defined $offerResults) {
             headline => $offer->{title},
             standfirst => $offer->{brief_description},
             paidStatus => 'NON_PREMIUM',
-            originalSource => 'SHOPPING',
+            originalSource => 'shopping',
             location => [{
               latitude => $offer->{store}->{location}->{lat},
               longitude => $offer->{store}->{location}->{long}
