@@ -39,6 +39,8 @@ window.app = (function() {
     template = dot.template('<ul class="table-view">{{~it :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<br /><button class="btn btn-primary btn-outlined">{{=value.distance}} kms</button><br /><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
+       // alert("Render list data");
+        console.log(template(data));
         listView.innerHTML = template(data);
     };
 
@@ -50,13 +52,13 @@ window.app = (function() {
     toggleView = function (btn) {
 
         if (mapView.classList.contains("hidden")) {
-            btn.innerHTML = "List";
+             btn.src = "img/list-view.svg";
             listView.classList.add("hidden");
             mapView.classList.remove("hidden");
 
         } else {
             listView.classList.remove("hidden");
-            btn.innerHTML = "Map";
+            btn.src = "img/map-view.png";
             mapView.classList.add("hidden");
         }
 
@@ -94,12 +96,42 @@ window.app = (function() {
     bindEvents = function() {
 
         var btnToggle   = document.getElementById("btn-toggle-view"),
+            btnLogin   = document.getElementById("btn-login"),
             btnSettings = document.getElementById("btn-settings"),
             btnNews     = document.getElementById("btn-news"),
+            sliderDistance = document.getElementById("distance"),
+            footerTab = document.querySelectorAll("footer .tab-item"),
             btnAlerts   = document.getElementById("btn-alerts"),
-            btnOffers   = document.getElementById("btn-offers");
+            btnOffers   = document.getElementById("btn-offers"),
+            len,
+            clearFooterTabs;
 
         document.addEventListener('deviceready', onDeviceReady, false);
+
+        // html slider distance
+        sliderDistance.addEventListener("input", function () {
+
+        });
+        
+
+        clearFooterTabs = function (elem) {
+            btnNews.classList.remove("active");
+            btnAlerts.classList.remove("active");
+            btnOffers.classList.remove("active");
+        };
+        
+        btnNews.addEventListener("touchstart", function () {
+            clearFooterTabs();
+            btnNews.classList.add("active");
+        });
+        btnOffers.addEventListener("touchstart", function () {
+            clearFooterTabs();
+            btnOffers.classList.add("active");
+        });
+        btnAlerts.addEventListener("touchstart", function () {
+            clearFooterTabs();
+            btnAlerts.classList.add("active");
+        });
 
         btnToggle.addEventListener("touchstart", function (e) {
             e.preventDefault();
@@ -108,6 +140,7 @@ window.app = (function() {
         }, false);
 
         btnSettings.addEventListener("touchstart", function () {
+            
             togglePanel('settings');
 
             // highlight with color
@@ -115,6 +148,8 @@ window.app = (function() {
 
             // hide map view
             btnToggle.classList.toggle("hidden");
+            btnLogin.classList.toggle("hidden");
+            mapView.classList.toggle("hidden");
         }, false);
 
     };

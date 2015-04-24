@@ -4,7 +4,14 @@ var helpers = require("./helpers");
 
 module.exports = (function() {
 
-    var newMap;
+    var newMap,
+        pins = {
+            news: '',
+            rea: '',
+            twitter: '',
+            offers: '',
+            alerts: ''
+        };
 
     newMap = function() {
 
@@ -33,6 +40,15 @@ module.exports = (function() {
                     }
                 });
 
+             // setup pins and styles
+            pins = {
+                rea: window.cordova.file.applicationDirectory + "www/img/pins/rea.png",
+                news: window.cordova.file.applicationDirectory + "www/img/pins/news.png",
+                alerts: window.cordova.file.applicationDirectory + "www/img/pins/alerts.png",
+                twitter: window.cordova.file.applicationDirectory + "www/img/pins/twitter.png",
+                whatson: window.cordova.file.applicationDirectory + "www/img/pins/whatson.png"
+            };
+
             markerExists = function (url) {
                 return !!markers[helpers.hashCode(url)] || false;
             };
@@ -49,8 +65,8 @@ module.exports = (function() {
                     if (markerExists(data[len].url)) {
                         console.log("marker exists");
                     } else {
-                        console.log("marker does not exist");
                         map.addMarker({
+                            icon: pins[data[len].originalSource.toLowerCase()],
                             snippet: data[len].url,
                             animation: plugin.google.maps.Animation.BOUNCE,
                             title: data[len].headline,
@@ -67,8 +83,6 @@ module.exports = (function() {
 
             // Initialize the map view
             map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
-
-                alert("map ready");
                 
                 map.getMyLocation(function(location) {
 

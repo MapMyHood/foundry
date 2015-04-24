@@ -88,9 +88,49 @@ header .icon.active {
     list-style: none;
 }
 
+h1.title {
+    line-height: 0.9;
+    padding: 3px;
+}
+h1.title > .logo-text {
+    font-size: 13px;
+    font-weight: bold;
+}
+h1.title > .logo-image {
+    width: 15px;
+    height: auto;
+}
+
 /* Fix for status bar */
 header.bar-nav {
     top: 20px !important;
+}
+header.bar button.btn {
+    padding: 4px;
+    height: 30px;
+    width: 30px;
+    border: none;
+}
+header.bar button.btn.active,
+header.bar button.btn:active {
+    background: none
+}
+header button img {
+    width: auto;
+    height: 100%;
+}
+.indicators {
+    display: flex;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+.table-view-cell.distance-slider {
+    padding: 12px;
+}
+.panel-settings .table-view-divider,
+.panel-settings p {
+    color: #BBB;
 }
 section.panel {
     width: 100%;
@@ -98,6 +138,9 @@ section.panel {
     left: 0;
     position: absolute;
     background: white;
+}
+section.panel.panel-settings {
+    background: #FAFAFA;
 }
 section.panel.hidden {
     display: none;
@@ -108,4 +151,11 @@ section > .view {
 }
 section > .view-list{
     overflow: scroll;
+}
+footer .bar-tab .tab-item {
+    text-align: center;
+}
+footer .bar-tab .tab-item img {
+    height: 20px;
+    width: auto;
 }
