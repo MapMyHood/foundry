@@ -70,7 +70,7 @@ sub getContent {
 
   $client->setHost('http://cdn.newsapi.com.au');
 
-  my $start = gettimeofday();
+  my $start = [gettimeofday()];
   $client->GET(
       'content/v1/?format=json&geoDistance=' . $lat . ',' . $long . ":" . $distance . '&type=news_story&origin=methode&includeRelated=false&includeBodies=true&includeFutureDated=false&pageSize=10&offset=0&maxRelatedLevel=1&api_key=r7j3ufg79yqkpmszf73b8ked',
       $headers
@@ -130,7 +130,7 @@ sub getContent {
   my $reaResults = cache_get('rea', $lat, $long);
 
   if (!defined $reaResults) {
-    $start = gettimeofday();
+    $start = [gettimeofday()];
     my $res = $ua->get($url);
     print STDERR "REA API call took " . tv_interval($start);
 
@@ -191,7 +191,7 @@ sub getContent {
 
   my $incidentsUrl = 'http://livetraffic.rta.nsw.gov.au/traffic/hazards/incident-open.json';
 
-  $start = gettimeofday();
+  $start = [gettimeofday()];
   $res = $ua->get($incidentsUrl);
   print STDERR "Traffic API call took " . tv_interval($start);
 
@@ -246,7 +246,7 @@ sub getContent {
 	my $req = GET $server_endpoint;
 	$req->authorization_basic($username, $password);
 
-  $start = gettimeofday();
+  $start = [gettimeofday()];
 	my $agent = LWP::UserAgent->new;
 	my $resp = $agent->request($req); 
   print STDERR "Twitter API call took " . tv_interval($start);
@@ -289,7 +289,7 @@ sub getContent {
   if (!defined $eventResults) {
     my $eventurl = "http://api.eventful.com/rest/events/search?app_key=DwG227bNxf2ZXbSS&keywords=books&location=$lat,$long&within=$distance&units=km&date=This+Week&page_size=50";
 
-    $start = gettimeofday();
+    $start = [gettimeofday()];
     $res = $ua->get($eventurl);
     print STDERR "Eventful API call took " . tv_interval($start);
 
