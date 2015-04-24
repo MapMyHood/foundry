@@ -284,6 +284,7 @@ sub getContent {
   	else {
   	}
   }
+  push (@resset, @$tweetResults);
 
   ## Add Eventful events
 
