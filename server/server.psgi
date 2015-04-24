@@ -359,7 +359,8 @@ sub cache_get {
   my ($source, $lat, $long) = @_;
 
   my $filename = "$source-$lat-$long.storable";
-
+  my $arrayref;
+  
   # Cache expiry set to 1 hour
   if (-e $filename && (stat($filename))[9] >= (time() - 3600)) {
     print STDERR "cache hit : $filename\n";
