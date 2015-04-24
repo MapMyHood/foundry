@@ -6,7 +6,6 @@ use Data::Dumper qw(Dumper);
 use Data::Structure::Util qw/unbless/;
 use DateTime qw();
 use DateTime::Format::Strptime qw();
-use File::Stat;
 use HTTP::Headers;
 use HTTP::Request::Common; 
 use HTTP::Request; 
