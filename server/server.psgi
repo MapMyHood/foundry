@@ -24,10 +24,12 @@ $Data::Dumper::Sortkeys = 1;
  
 my $app = sub {
   my $env = shift;
-  my ($html,$dist,$latlong);
+  my ($html, $dist, $latlong);
 
   my $request = Plack::Request->new($env);
  
+  return [ 404, ['Content-Type' => 'text/html'], [ '404 Not Found' ] ] unless $request->path eq '/';
+
   if ($request->param('latlong')) {
       $latlong = $request->param('latlong') || "-33.885193,151.209399";
   }
