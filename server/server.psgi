@@ -338,10 +338,10 @@ my $offerResults = cache_get('localshoppa', $lat, $long);
 
 if (!defined $offerResults) {
   my $url = "http://api.localshoppa.com.au/2.0/55399b27333bfe0cfce9c0b0/Deal?latitude=$lat&order=closest&skip=0&radius=$distance&take=10&longitude=$long";
-
+  
+  $start = [gettimeofday()];
   my $res = $ua->get($url);
-
-  my $offerResults;
+  print STDERR "LocalShoppa API call took " . tv_interval($start) . "\n";
 
   if ($res->is_success) {
       my $offers = $json->decode($res->content);
