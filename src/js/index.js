@@ -111,6 +111,7 @@ window.app = (function() {
             sliderDistance = document.getElementById("distance"),
             footerTab = document.querySelectorAll("footer .tab-item"),
             btnAlerts   = document.getElementById("btn-alerts"),
+            btnSearch   = document.getElementById("btn-search"),
             btnOffers   = document.getElementById("btn-offers"),
             len,
             clearFooterTabs;
@@ -134,31 +135,48 @@ window.app = (function() {
         btnNews.addEventListener("touchstart", function () {
             clearFooterTabs();
             btnNews.classList.toggle("active");
-            
-            if (window.settings.categories.indexOf("news") > -1 ) {
-                window.settings.categories.splice(window.settings.categories.indexOf("news"), 1);
-            } else {
-                window.settings.categories.push("news");
-            }
+            window.settings.categories = "news";
+
+           /* window.markers.forEach(function (value) {
+                if (value.source === "traffic" || value.source === "shopping" || value.source === "eventful") {
+                    try {
+                        value.ref.remove();
+                    } catch (e) {
+                        console.log("Unable to remove marker", e);
+                    }
+                }
+            });*/
 
         });
         btnOffers.addEventListener("touchstart", function () {
             clearFooterTabs();
             btnOffers.classList.toggle("active");
-            if (window.settings.categories.indexOf("whatson") > -1 ) {
-                window.settings.categories.splice(window.settings.categories.indexOf("whatson"), 1);
-            } else {
-                window.settings.categories.push("whatson");
-            }
+            window.settings.categories = "whatson";
+
+            /*window.markers.forEach(function (value) {
+                if (value.source === "news" || value.source === "rea" || value.source === "twitter"| value.source === "traffic") {
+                    try {
+                        value.ref.remove();
+                    } catch (e) {
+                        console.log("Unable to remove marker", e);
+                    }
+                }
+            });*/
         });
         btnAlerts.addEventListener("touchstart", function () {
             clearFooterTabs();
             btnAlerts.classList.toggle("active");
-            if (window.settings.categories.indexOf("alerts") > -1 ) {
-                window.settings.categories.splice(window.settings.categories.indexOf("alerts"), 1);
-            } else {
-                window.settings.categories.push("alerts");
-            }
+            window.settings.categories = "alerts";
+
+           /* window.markers.forEach(function (value) {
+                if (value.source === "news" || value.source === "rea" || value.source === "twitter"| value.source === "eventful" || value.source === "eventful") {
+                    try {
+                        value.ref.remove();
+                    } catch (e) {
+                        console.log("Unable to remove marker", e);
+                    }
+                }
+            });*/
         });
 
         btnToggle.addEventListener("touchstart", function (e) {
@@ -166,6 +184,15 @@ window.app = (function() {
             e.stopPropagation();
             toggleView(e.target);
         }, false);
+
+        btnSearch.addEventListener("touchstart", function () {
+            togglePanel('search');
+            btnToggle.classList.toggle("hidden");
+            btnLogin.classList.toggle("hidden");
+            btnSettings.classList.toggle("hidden");
+            mapView.classList.toggle("hidden");
+            btnSearch.classList.toggle("active");
+        });
 
         btnSettings.addEventListener("touchstart", function () {
             

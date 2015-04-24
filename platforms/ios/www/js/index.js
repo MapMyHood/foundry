@@ -25,21 +25,7 @@ module.exports = {
     },
     hashCode: function (str) {
 
-        var hash = 0;
-
-        if (this.length === 0) return hash;
-
-        for (i = 0; i < this.length; i++) {
-
-            char = this.charCodeAt(i);
-
-            hash = ((hash<<5)-hash)+char;
-
-            hash = hash & hash; // Convert to 32bit integer
-
-        }
-
-        return hash;
+        return CryptoJS.MD5(str).toString();
 
     }
 
@@ -158,6 +144,7 @@ window.app = (function() {
             sliderDistance = document.getElementById("distance"),
             footerTab = document.querySelectorAll("footer .tab-item"),
             btnAlerts   = document.getElementById("btn-alerts"),
+            btnSearch   = document.getElementById("btn-search"),
             btnOffers   = document.getElementById("btn-offers"),
             len,
             clearFooterTabs;
@@ -181,31 +168,48 @@ window.app = (function() {
         btnNews.addEventListener("touchstart", function () {
             clearFooterTabs();
             btnNews.classList.toggle("active");
-            
-            if (window.settings.categories.indexOf("news") > -1 ) {
-                window.settings.categories.splice(window.settings.categories.indexOf("news"), 1);
-            } else {
-                window.settings.categories.push("news");
-            }
+            window.settings.categories = "news";
+
+           /* window.markers.forEach(function (value) {
+                if (value.source === "traffic" || value.source === "shopping" || value.source === "eventful") {
+                    try {
+                        value.ref.remove();
+                    } catch (e) {
+                        console.log("Unable to remove marker", e);
+                    }
+                }
+            });*/
 
         });
         btnOffers.addEventListener("touchstart", function () {
             clearFooterTabs();
             btnOffers.classList.toggle("active");
-            if (window.settings.categories.indexOf("whatson") > -1 ) {
-                window.settings.categories.splice(window.settings.categories.indexOf("whatson"), 1);
-            } else {
-                window.settings.categories.push("whatson");
-            }
+            window.settings.categories = "whatson";
+
+            /*window.markers.forEach(function (value) {
+                if (value.source === "news" || value.source === "rea" || value.source === "twitter"| value.source === "traffic") {
+                    try {
+                        value.ref.remove();
+                    } catch (e) {
+                        console.log("Unable to remove marker", e);
+                    }
+                }
+            });*/
         });
         btnAlerts.addEventListener("touchstart", function () {
             clearFooterTabs();
             btnAlerts.classList.toggle("active");
-            if (window.settings.categories.indexOf("alerts") > -1 ) {
-                window.settings.categories.splice(window.settings.categories.indexOf("alerts"), 1);
-            } else {
-                window.settings.categories.push("alerts");
-            }
+            window.settings.categories = "alerts";
+
+           /* window.markers.forEach(function (value) {
+                if (value.source === "news" || value.source === "rea" || value.source === "twitter"| value.source === "eventful" || value.source === "eventful") {
+                    try {
+                        value.ref.remove();
+                    } catch (e) {
+                        console.log("Unable to remove marker", e);
+                    }
+                }
+            });*/
         });
 
         btnToggle.addEventListener("touchstart", function (e) {
@@ -213,6 +217,15 @@ window.app = (function() {
             e.stopPropagation();
             toggleView(e.target);
         }, false);
+
+        btnSearch.addEventListener("touchstart", function () {
+            togglePanel('search');
+            btnToggle.classList.toggle("hidden");
+            btnLogin.classList.toggle("hidden");
+            btnSettings.classList.toggle("hidden");
+            mapView.classList.toggle("hidden");
+            btnSearch.classList.toggle("active");
+        });
 
         btnSettings.addEventListener("touchstart", function () {
             
@@ -402,6 +415,7 @@ module.exports = (function() {
         };
 
     window.settings = window.settings || {};
+    window.markers = [];
 
     newMap = function() {
 
@@ -419,7 +433,6 @@ module.exports = (function() {
 
             var mapElem = document.getElementById(selector),
                 markerExists,
-                markers = [],
                 map = plugin.google.maps.Map.getMap(mapElem, {
                     target: latLng,
                     'controls': {
@@ -440,9 +453,8 @@ module.exports = (function() {
             };
 
             markerExists = function (url) {
-                console.log("Hash code", helpers.hashCode(url));
-                console.log("markers", markers);
-                return !!markers[helpers.hashCode(url)] || false;
+                return window.markers[helpers.hashCode(url)] &&
+                    window.markers[helpers.hashCode(url)].ref  || false;
             };
 
             // subscribe to updates
@@ -497,7 +509,17 @@ module.exports = (function() {
                             correctPin = "whatson";
                         }
 
-                        if (sources[data[len].originalSource.toLowerCase()]) {
+                        console.log(data[len]);
+
+                        //if (sources[data[len].originalSource.toLowerCase()]) {
+
+                            // add marker to global stack
+                            window.markers[helpers.hashCode(data[len].url)] = {
+                                source: data[len].originalSource.toLowerCase(),
+                                ref: null
+                            };
+
+
                             map.addMarker({
                                 icon: pins[correctPin],
                                 snippet: data[len].url,
@@ -511,13 +533,9 @@ module.exports = (function() {
                                 marker.addEventListener(plugin.google.maps.event.INFO_CLICK, function() {
                                    window.open(marker.getSnippet(), "_new");
                                 });
-                                console.log("Saving marker to", helpers.hashCode(marker.getSnippet()));
-                                markers[helpers.hashCode(marker.getSnippet())] = [
-                                    marker,
-                                    sources[data[len].originalSource.toLowerCase()]
-                                ];
+                                window.markers[helpers.hashCode(marker.getSnippet())].ref = marker;
                             });
-                        }
+                        //}
                     }
                 }
             });
@@ -532,7 +550,9 @@ module.exports = (function() {
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 16
+                      'zoom': 15
+                    }, function () {
+                        map.addMarker({icon: "img/pins/user.png"});
                     });
                     
                 });
@@ -582,7 +602,7 @@ module.exports = (function () {
             window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + getDistance(), function (data) {
                 window.publish("update", [data, lat, lng]);
             });
-        }, 10000);
+        }, 5000);
     };
 
     init = function (lat, lng) {

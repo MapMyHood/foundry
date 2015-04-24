@@ -54,13 +54,30 @@
             <img src="img/login-screen.jpg" width="100%" />
         </section>
 
+         <section class="panel panel-search hidden">
+            <form>
+                <input type="text" placeholder="postcode">
+                <button class="btn btn-positive btn-block">Set Location</button>
+            </form>
+        </section>
+
         <section id="settingsPanel" class="panel panel-settings hidden">
             <ul class="table-view">
-                 <li class="table-view-cell table-view-divider">PROXIMITY</li>
+                 <li class="table-view-cell table-view-divider">PROXIMITY <span id="distance-value">5</span>kms</li>
                 <li class="table-view-cell distance-slider">
                     <input id="distance" type ="range" class="slider" value="5" min ="1" max="10" step ="1" />
                     <div class="indicators"><span>1km</span><span>5km</span><span>10km</span></div>
                     <p>Proximity is based around your current location</p>
+                    <script>
+                        (function () {
+                            var slider = document.getElementById("distance"),
+                                distanceValue = document.getElementById("distance-value");
+
+                            distance.addEventListener("input", function () {
+                                distanceValue.innerHTML = distance.value;
+                            });
+                        }());
+                    </script>
                 </li>
                  <li class="table-view-cell table-view-divider"></li>
                 <li class="table-view-cell">
@@ -98,7 +115,7 @@
                     <span class="icon active"><img src="img/search.svg" /></span>
                     <span class="tab-label">Search</span>
                 </a>
-                <a class="tab-item" href="#" id="btn-news">
+                <a class="tab-item active" href="#" id="btn-news">
                      <span class="icon"><img src="img/news.svg" /></span>
                     <span class="tab-label">News</span>
                 </a>
@@ -121,6 +138,8 @@
         </script>
 
         <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/lib/md5.js"></script>
+
         <script type="text/javascript" src="js/lib/jsonp.js"></script>
         <script type="text/javascript" src="js/lib/minpubsub.js"></script>
         <script type="text/javascript" src="js/index.js"></script>

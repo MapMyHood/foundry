@@ -28,7 +28,7 @@ module.exports = (function () {
             window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + getDistance(), function (data) {
                 window.publish("update", [data, lat, lng]);
             });
-        }, 10000);
+        }, 5000);
     };
 
     init = function (lat, lng) {

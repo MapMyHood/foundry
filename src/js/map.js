@@ -14,6 +14,7 @@ module.exports = (function() {
         };
 
     window.settings = window.settings || {};
+    window.markers = [];
 
     newMap = function() {
 
@@ -31,7 +32,6 @@ module.exports = (function() {
 
             var mapElem = document.getElementById(selector),
                 markerExists,
-                markers = [],
                 map = plugin.google.maps.Map.getMap(mapElem, {
                     target: latLng,
                     'controls': {
@@ -52,9 +52,8 @@ module.exports = (function() {
             };
 
             markerExists = function (url) {
-                console.log("Hash code", helpers.hashCode(url));
-                console.log("markers", markers);
-                return !!markers[helpers.hashCode(url)] || false;
+                return window.markers[helpers.hashCode(url)] &&
+                    window.markers[helpers.hashCode(url)].ref  || false;
             };
 
             // subscribe to updates
@@ -109,7 +108,17 @@ module.exports = (function() {
                             correctPin = "whatson";
                         }
 
-                        if (sources[data[len].originalSource.toLowerCase()]) {
+                        console.log(data[len]);
+
+                        //if (sources[data[len].originalSource.toLowerCase()]) {
+
+                            // add marker to global stack
+                            window.markers[helpers.hashCode(data[len].url)] = {
+                                source: data[len].originalSource.toLowerCase(),
+                                ref: null
+                            };
+
+
                             map.addMarker({
                                 icon: pins[correctPin],
                                 snippet: data[len].url,
@@ -123,13 +132,9 @@ module.exports = (function() {
                                 marker.addEventListener(plugin.google.maps.event.INFO_CLICK, function() {
                                    window.open(marker.getSnippet(), "_new");
                                 });
-                                console.log("Saving marker to", helpers.hashCode(marker.getSnippet()));
-                                markers[helpers.hashCode(marker.getSnippet())] = [
-                                    marker,
-                                    sources[data[len].originalSource.toLowerCase()]
-                                ];
+                                window.markers[helpers.hashCode(marker.getSnippet())].ref = marker;
                             });
-                        }
+                        //}
                     }
                 }
             });
@@ -144,7 +149,9 @@ module.exports = (function() {
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 16
+                      'zoom': 15
+                    }, function () {
+                        map.addMarker({icon: "img/pins/user.png"});
                     });
                     
                 });

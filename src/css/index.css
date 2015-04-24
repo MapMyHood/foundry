@@ -120,9 +120,12 @@ header button img {
     height: 100%;
 }
 .indicators {
-    display: flex;
-    display: flex;
-    justify-content: space-between;
+    display: -webkit-flex;
+    -webkit-box-pack: justify;
+  -moz-box-pack: justify;
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
     font-size: 14px;
 }
 .table-view-cell.distance-slider {
@@ -154,6 +157,10 @@ section > .view-list{
 }
 footer .bar-tab .tab-item {
     text-align: center;
+}
+footer .bar-tab .tab-item.active {
+    text-align: center;
+    font-weight: bold;
 }
 footer .bar-tab .tab-item img {
     height: 20px;
