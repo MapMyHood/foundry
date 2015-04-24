@@ -298,7 +298,7 @@ sub getContent {
   my $eventResults = cache_get('eventful', $lat, $long);
 
   if (!defined $eventResults) {
-    my $eventurl = "http://api.eventful.com/rest/events/search?app_key=DwG227bNxf2ZXbSS&keywords=books&location=$lat,$long&within=$distance&units=km&date=This+Week&page_size=50";
+    my $eventurl = "http://api.eventful.com/rest/events/search?app_key=DwG227bNxf2ZXbSS&keywords=books&location=$lat,$long&within=$distance&units=km&date=This+Week&page_size=10";
 
     $start = [gettimeofday()];
     $res = $ua->get($eventurl);
