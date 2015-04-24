@@ -312,22 +312,33 @@ sub getContent {
         my $description = $event->{description};
         $description =~ s|<.+?>||g;
 
-          push @$eventResults, {
-            url => $event->{url},
-            headline => $event->{title},
-            standfirst => elide($description, 150, {at_space => 1}),
-            paidStatus => 'NON_PREMIUM',
-            originalSource => 'eventful',
-            location => [{
-              latitude => $event->{latitude},
-              longitude => $event->{longitude}
-            }],
-            thumbnail => {
+        my $eventImage;
+        if ($event->{image}->{medium}->{url}) {
+            $eventImage = {
               uri => $event->{image}->{medium}->{url},
               width => $event->{image}->{medium}->{width},
-              height => $event->{image}->{medium}->{height},
-            }
-          };
+              height => $event->{image}->{medium}->{height}
+            };
+        }
+        else {
+            $eventImage = {
+              uri => 'http://placehold.it/128x128',
+              width => '128',
+              height => '128'
+            };
+        }
+        push @$eventResults, {
+          url => $event->{url},
+          headline => $event->{title},
+          standfirst => elide($description, 150, {at_space => 1}),
+          paidStatus => 'NON_PREMIUM',
+          originalSource => 'eventful',
+          location => [{
+            latitude => $event->{latitude},
+            longitude => $event->{longitude}
+          }],
+          thumbnail => $eventImage
+        };
       }
       cache_set('eventful', $eventResults, $lat, $long);
     }
