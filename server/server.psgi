@@ -29,7 +29,7 @@ my $app = sub {
   my $request = Plack::Request->new($env);
  
   if ($request->param('latlong')) {
-      $latlong = $request->param('latlong');
+      $latlong = $request->param('latlong') || "-33.885193,151.209399";
   }
 
   if ($request->param('dist')) {
@@ -241,38 +241,37 @@ sub getContent {
 	my $resp = $agent->request($req); 
 
 	if ($resp->is_success) {
-	my $message = from_json($resp->decoded_content);
+  	my $message = from_json($resp->decoded_content);
 
-	my $results = $message->{'results'};
+  	my $results = $message->{'results'};
 
-  foreach my $result (@$results){
+    foreach my $result (@$results){
 
-	push @resset, {
-          url => $result->{'link'},
-          headline => $result->{'object'}{'summary'},
-          standfirst => $result->{'object'}{'summary'},
-          paidStatus => 'NON_PREMIUM',
-          originalSource => 'twitter',
-          location => [{
-            latitude => $result->{'geo'}{'coordinates'}[0],
-            longitude => $result->{'geo'}{'coordinates'}[1]
-          }],
-          thumbnail => {
-            uri => $result->{'actor'}{'image'},
-            width => 100,
-            height => 100,
-          }
-        };
-    }
+  	push @resset, {
+            url => $result->{'link'},
+            headline => $result->{'object'}{'summary'},
+            standfirst => $result->{'object'}{'summary'},
+            paidStatus => 'NON_PREMIUM',
+            originalSource => 'twitter',
+            location => [{
+              latitude => $result->{'geo'}{'coordinates'}[0],
+              longitude => $result->{'geo'}{'coordinates'}[1]
+            }],
+            thumbnail => {
+              uri => $result->{'actor'}{'image'},
+              width => 100,
+              height => 100,
+            }
+          };
+      }
 
-	#my $message = $resp->decoded_content;
-	#print "Received reply: " . Dumper($message) . "\n";
+  	#my $message = $resp->decoded_content;
+  	#print "Received reply: " . Dumper($message) . "\n";
 	}
 	else {
 	}
 
   ## Add Eventful events
-
 
   my $eventResults = cache_get('eventful', $lat, $long);
 
@@ -312,7 +311,7 @@ sub getContent {
       warn $res->status_line;
     }
   }
-  
+
   push (@resset, @$eventResults);
 
 
