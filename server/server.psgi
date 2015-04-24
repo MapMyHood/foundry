@@ -332,6 +332,47 @@ sub getContent {
   push (@resset, @$eventResults);
 
 
+## add in localshoppa
+
+my $offerResults = cache_get('localshoppa', $lat, $long);
+
+if (!defined $offerResults) {
+  my $url = "http://api.localshoppa.com.au/2.0/55399b27333bfe0cfce9c0b0/Deal?latitude=$lat&order=closest&skip=0&radius=$distance&take=10&longitude=$long";
+
+  my $res = $ua->get($url);
+
+  my $offerResults;
+
+  if ($res->is_success) {
+      my $offers = $json->decode($res->content);
+      foreach my $offer (@{$offers->{data}}) {
+        push @$offerResults, {
+            url => $offer->{'buynow_url'},
+            headline => $offer->{title},
+            standfirst => $offer->{brief_description},
+            paidStatus => 'NON_PREMIUM',
+            originalSource => 'LOCALSHOPPA',
+            location => [{
+              latitude => $offer->{store}->{location}->{lat},
+              longitude => $offer->{store}->{location}->{long}
+            }],
+            thumbnail => {
+              uri => $offer->{thumbnail_url},
+              width => 200,
+              height => 150,
+            }
+          };
+      }
+      cache_set('localshoppa', $offerResults, $lat, $long);
+  }
+  else {
+    warn $res->status_line;
+  }
+}
+
+push (@resset, @$offerResults);
+
+
 $res2->{'resultSet'} = \@resset;
 $res2->{'resultSize'} = scalar @resset;
 
