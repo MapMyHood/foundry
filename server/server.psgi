@@ -101,7 +101,7 @@ sub getContent {
       $pins{$pinDist} = $location;
     }
     my @keys = sort {$a <=> $b} keys %pins;
-    $resultSimple->{'location'}            =  $pins{$keys[0]};
+    $resultSimple->{'location'}            =  [$pins{$keys[0]}];
 
     #print "Array: " . Dumper($resultSimple) . "\n";
 
