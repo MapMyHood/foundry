@@ -18,6 +18,7 @@ use Plack::Request;
 use REST::Client;
 use Storable;
 use String::Truncate qw(elide);
+use Time::HiRes qw(gettimeofday);
 use URI::Escape;
 use XML::Simple;
 $Data::Dumper::Sortkeys = 1;
@@ -69,10 +70,12 @@ sub getContent {
 
   $client->setHost('http://cdn.newsapi.com.au');
 
+  my $start = gettimeofday();
   $client->GET(
       'content/v1/?format=json&geoDistance=' . $lat . ',' . $long . ":" . $distance . '&type=news_story&origin=methode&includeRelated=false&includeBodies=true&includeFutureDated=false&pageSize=10&offset=0&maxRelatedLevel=1&api_key=r7j3ufg79yqkpmszf73b8ked',
       $headers
   );
+  print STDERR "News API call took " . gettimeofday() - $start;
 
   my @resset;
   my $res2;
@@ -127,7 +130,9 @@ sub getContent {
   my $reaResults = cache_get('rea', $lat, $long);
 
   if (!defined $reaResults) {
+    $start = gettimeofday();
     my $res = $ua->get($url);
+    print STDERR "REA API call took " . gettimeofday() - $start;
 
     if ($res->is_success) {
       my $listings = $json->decode($res->content);
@@ -186,7 +191,9 @@ sub getContent {
 
   my $incidentsUrl = 'http://livetraffic.rta.nsw.gov.au/traffic/hazards/incident-open.json';
 
+  $start = gettimeofday();
   $res = $ua->get($incidentsUrl);
+  print STDERR "Traffic API call took " . gettimeofday() - $start;
 
   if ($res->is_success) {
     my $incidents = $json->decode($res->content);
@@ -239,8 +246,10 @@ sub getContent {
 	my $req = GET $server_endpoint;
 	$req->authorization_basic($username, $password);
 
+  $start = gettimeofday();
 	my $agent = LWP::UserAgent->new;
 	my $resp = $agent->request($req); 
+  print STDERR "Twitter API call took " . gettimeofday() - $start;
 
 	if ($resp->is_success) {
   	my $message = from_json($resp->decoded_content);
@@ -280,7 +289,9 @@ sub getContent {
   if (!defined $eventResults) {
     my $eventurl = "http://api.eventful.com/rest/events/search?app_key=DwG227bNxf2ZXbSS&keywords=books&location=$lat,$long&within=$distance&units=km&date=This+Week&page_size=50";
 
+    $start = gettimeofday();
     $res = $ua->get($eventurl);
+    print STDERR "Eventful API call took " . gettimeofday() - $start;
 
     if ($res->is_success) {
       my $xs = XML::Simple->new();    
