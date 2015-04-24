@@ -75,7 +75,7 @@ sub getContent {
       'content/v1/?format=json&geoDistance=' . $lat . ',' . $long . ":" . $distance . '&type=news_story&origin=methode&includeRelated=false&includeBodies=true&includeFutureDated=false&pageSize=10&offset=0&maxRelatedLevel=1&api_key=r7j3ufg79yqkpmszf73b8ked',
       $headers
   );
-  print STDERR "News API call took " . tv_interval($start);
+  print STDERR "News API call took " . tv_interval($start) . "\n";
 
   my @resset;
   my $res2;
@@ -132,7 +132,7 @@ sub getContent {
   if (!defined $reaResults) {
     $start = [gettimeofday()];
     my $res = $ua->get($url);
-    print STDERR "REA API call took " . tv_interval($start);
+    print STDERR "REA API call took " . tv_interval($start) . "\n";
 
     if ($res->is_success) {
       my $listings = $json->decode($res->content);
@@ -193,7 +193,7 @@ sub getContent {
 
   $start = [gettimeofday()];
   $res = $ua->get($incidentsUrl);
-  print STDERR "Traffic API call took " . tv_interval($start);
+  print STDERR "Traffic API call took " . tv_interval($start) . "\n";
 
   if ($res->is_success) {
     my $incidents = $json->decode($res->content);
@@ -249,7 +249,7 @@ sub getContent {
   $start = [gettimeofday()];
 	my $agent = LWP::UserAgent->new;
 	my $resp = $agent->request($req); 
-  print STDERR "Twitter API call took " . tv_interval($start);
+  print STDERR "Twitter API call took " . tv_interval($start) . "\n";
 
 	if ($resp->is_success) {
   	my $message = from_json($resp->decoded_content);
@@ -291,7 +291,7 @@ sub getContent {
 
     $start = [gettimeofday()];
     $res = $ua->get($eventurl);
-    print STDERR "Eventful API call took " . tv_interval($start);
+    print STDERR "Eventful API call took " . tv_interval($start) . "\n";
 
     if ($res->is_success) {
       my $xs = XML::Simple->new();    
