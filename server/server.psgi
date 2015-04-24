@@ -351,7 +351,7 @@ if (!defined $offerResults) {
             headline => $offer->{title},
             standfirst => $offer->{brief_description},
             paidStatus => 'NON_PREMIUM',
-            originalSource => 'LOCALSHOPPA',
+            originalSource => 'SHOPPING',
             location => [{
               latitude => $offer->{store}->{location}->{lat},
               longitude => $offer->{store}->{location}->{long}
