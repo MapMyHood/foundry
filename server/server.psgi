@@ -310,7 +310,7 @@ sub getContent {
       cache_set('eventful', $lat, $long)
     }
     else {
-      warn $res->status_line;
+      print STDERR "Eventful failed: " . $res->status_line . "\n";
     }
   }
 
@@ -362,7 +362,11 @@ sub cache_get {
 
   # Cache expiry set to 1 hour
   if (-e $filename && (stat($filename))[9] >= (time() - 3600)) {
+    print STDERR "cache hit : $filename\n";
     $arrayref = retrieve($filename);
+  }
+  else {
+    print STDERR "cache miss : $filename\n";
   }
   return $arrayref;
 }
