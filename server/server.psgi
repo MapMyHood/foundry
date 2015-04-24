@@ -94,7 +94,13 @@ sub getContent {
     $resultSimple->{'thumbnail'}{'width'}  =  $result->{'thumbnailImage'}{'width'};
     $resultSimple->{'thumbnail'}{'height'} =  $result->{'thumbnailImage'}{'height'};
     $resultSimple->{'url'}                 = $result->{'link'};
-    $resultSimple->{'location'}            =  $result->{'locationGeoPoints'};
+    # only grab the closest geopoint
+    for my $location (@{$result->{locationGeoPoints}}) {
+      my $pinDist = distance($lat, $long, $location->{latitude}, $location->{longitude});
+      %pins{$pinDist} = $location;
+    }
+    my @keys = sort {$a <=> $b} keys %pins;
+    $resultSimple->{'location'}            =  $pins{$keys[0]};
 
     #print "Array: " . Dumper($resultSimple) . "\n";
 
