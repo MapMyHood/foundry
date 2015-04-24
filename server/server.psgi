@@ -307,7 +307,7 @@ sub getContent {
             }
           };
       }
-      cache_set('eventful', $lat, $long)
+      cache_set('eventful', $eventResults, $lat, $long)
     }
     else {
       print STDERR "Eventful failed: " . $res->status_line . "\n";
@@ -360,7 +360,7 @@ sub cache_get {
 
   my $filename = "$source-$lat-$long.storable";
   my $arrayref;
-  
+
   # Cache expiry set to 1 hour
   if (-e $filename && (stat($filename))[9] >= (time() - 3600)) {
     print STDERR "cache hit : $filename\n";
@@ -376,5 +376,5 @@ sub cache_set {
   my ($source, $data, $lat, $long) = @_;
 
   my $filename = "$source-$lat-$long.storable";
-  store($data, $filename)
+  store($data, $filename);
 }
