@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="48px" height="49px" viewBox="0 0 48 49" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3 (11970) - http://www.bohemiancoding.com/sketch -->
+    <title>magnifying-glass34</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path id="path-1" d="M0.00736,0.064685567 L51,0.064685567 L51,51 L0.00736,51 L0.00736,0.064685567 Z"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Home-Default" sketch:type="MSArtboardGroup" transform="translate(-47.000000, -1239.000000)">
+            <g id="magnifying-glass34" sketch:type="MSLayerGroup" transform="translate(45.000000, 1238.000000)">
+                <mask id="mask-2" sketch:name="Clip 2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-2"></g>
+                <path d="M34.9474293,32.6244974 C37.9777867,29.3846469 39.8685707,25.0459897 39.8685707,20.2688273 C39.8685707,10.2468041 31.610528,2.06468557 21.4344693,2.06468557 C11.25792,2.06468557 3,10.2468041 3,20.2688273 C3,30.2902448 11.25792,38.4724845 21.4344693,38.4724845 C25.5774133,38.4724845 29.3862133,37.1272912 32.4726293,34.8483969 L46.1801387,48.3846392 C46.5140373,48.7140026 46.9309813,48.8786237 47.3478027,48.8786237 C47.7652373,48.8786237 48.209904,48.7140026 48.51608,48.3846392 C49.155296,47.7529253 49.155296,46.7095979 48.51608,46.0509923 L34.9474293,32.6244974 Z M6.33641067,20.2688273 C6.33641067,12.0590902 13.093136,5.35940979 21.4344693,5.35940979 C29.74808,5.35940979 36.5320373,12.0317139 36.5320373,20.2688273 C36.5320373,28.5059407 29.7758027,35.1777603 21.4344693,35.1777603 C13.093136,35.1777603 6.33641067,28.4784433 6.33641067,20.2688273 L6.33641067,20.2688273 Z" id="Fill-1" stroke="#8E8E8E" fill="#8E8E8E" sketch:type="MSShapeGroup" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -77,6 +77,9 @@
 		2609573A955D43BFAB096D33 /* MyReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3524BF4CF4DF4B789A1EF9C1 /* MyReachability.m */; };
 		5381D93D645C4F4D96223A13 /* MyPluginLayerDebugView.m in Sources */ = {isa = PBXBuildFile; fileRef = B5368471BAEF4FBBBEB02548 /* MyPluginLayerDebugView.m */; };
 		74AD41AD87154BCC9DB82DC7 /* MyPluginScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 787A4123E65F4642A60F237B /* MyPluginScrollView.m */; };
+		90603A6DD7C747B2A52B91C9 /* CDVFile.m in Sources */ = {isa = PBXBuildFile; fileRef = AE6F36B569E84DE589BAA8F0 /* CDVFile.m */; };
+		95069E51D9EF450280E2D920 /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 8825AF0E4AA043E4AA993259 /* CDVLocalFilesystem.m */; };
+		332EB06EC1E348F1BF29665B /* CDVAssetLibraryFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 5BA776BD8D17440BA6F886EF /* CDVAssetLibraryFilesystem.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -204,6 +207,12 @@
 		9B6DC46DE41B4DAB8C6F32EF /* MyReachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MyReachability.h"; path = "plugin.google.maps/MyReachability.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		B97EC0C699464730A7BB0799 /* MyPluginLayerDebugView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MyPluginLayerDebugView.h"; path = "plugin.google.maps/MyPluginLayerDebugView.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		E2EADED2B7684C67962D3307 /* MyPluginScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MyPluginScrollView.h"; path = "plugin.google.maps/MyPluginScrollView.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		AE6F36B569E84DE589BAA8F0 /* CDVFile.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVFile.m"; path = "org.apache.cordova.file/CDVFile.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		8825AF0E4AA043E4AA993259 /* CDVLocalFilesystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVLocalFilesystem.m"; path = "org.apache.cordova.file/CDVLocalFilesystem.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		5BA776BD8D17440BA6F886EF /* CDVAssetLibraryFilesystem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVAssetLibraryFilesystem.m"; path = "org.apache.cordova.file/CDVAssetLibraryFilesystem.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		5AD8F359EB654CEB9E80D982 /* CDVFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVFile.h"; path = "org.apache.cordova.file/CDVFile.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		99586D4923904B5CB1230C58 /* CDVLocalFilesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVLocalFilesystem.h"; path = "org.apache.cordova.file/CDVLocalFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		C4814AC2FB9C4E249FFA1E63 /* CDVAssetLibraryFilesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVAssetLibraryFilesystem.h"; path = "org.apache.cordova.file/CDVAssetLibraryFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -377,6 +386,12 @@
 				9B6DC46DE41B4DAB8C6F32EF /* MyReachability.h */,
 				B97EC0C699464730A7BB0799 /* MyPluginLayerDebugView.h */,
 				E2EADED2B7684C67962D3307 /* MyPluginScrollView.h */,
+				AE6F36B569E84DE589BAA8F0 /* CDVFile.m */,
+				8825AF0E4AA043E4AA993259 /* CDVLocalFilesystem.m */,
+				5BA776BD8D17440BA6F886EF /* CDVAssetLibraryFilesystem.m */,
+				5AD8F359EB654CEB9E80D982 /* CDVFile.h */,
+				99586D4923904B5CB1230C58 /* CDVLocalFilesystem.h */,
+				C4814AC2FB9C4E249FFA1E63 /* CDVAssetLibraryFilesystem.h */,
 			);
 			name = Plugins;
 			path = "MapMyHood/Plugins";
@@ -586,6 +601,9 @@
 				2609573A955D43BFAB096D33 /* MyReachability.m in Sources */,
 				5381D93D645C4F4D96223A13 /* MyPluginLayerDebugView.m in Sources */,
 				74AD41AD87154BCC9DB82DC7 /* MyPluginScrollView.m in Sources */,
+				90603A6DD7C747B2A52B91C9 /* CDVFile.m in Sources */,
+				95069E51D9EF450280E2D920 /* CDVLocalFilesystem.m in Sources */,
+				332EB06EC1E348F1BF29665B /* CDVAssetLibraryFilesystem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

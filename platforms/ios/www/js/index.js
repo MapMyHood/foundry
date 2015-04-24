@@ -83,9 +83,11 @@ window.app = (function() {
         listView = document.querySelector("section.panel > .view-list");
 
     // list template
-    template = dot.template('<ul class="table-view">{{~it :value:index}}<li class="table-view-cell media"><a class="navigate-right"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<br /><button class="btn btn-primary btn-outlined">{{=value.distance}} kms</button><br /><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
+    template = dot.template('<ul class="table-view">{{~it :value:index}}<li class="table-view-cell media"><a class="navigate-right" href="{{=value.url}}" target="_blank"><img class="media-object pull-left" src="{{=value.thumbnail.uri}}"><div class="media-body">{{=value.headline}}<br /><button class="btn btn-primary btn-outlined">{{=value.distance}} kms</button>&nbsp;<button class="btn btn-primary btn-outlined">{{=value.originalSource}}</button><br /><p>{{=value.standfirst}}</p></div></a></li>{{~}}</ul>');
 
     render = function (data) {
+       // alert("Render list data");
+        //console.log(template(data));
         listView.innerHTML = template(data);
     };
 
@@ -97,13 +99,13 @@ window.app = (function() {
     toggleView = function (btn) {
 
         if (mapView.classList.contains("hidden")) {
-            btn.innerHTML = "List";
+             btn.src = "img/list-view.svg";
             listView.classList.add("hidden");
             mapView.classList.remove("hidden");
 
         } else {
             listView.classList.remove("hidden");
-            btn.innerHTML = "Map";
+            btn.src = "img/map-view.png";
             mapView.classList.add("hidden");
         }
 
@@ -122,6 +124,8 @@ window.app = (function() {
         
     };
 
+    window.settings = window.settings || {};
+
     // Application Constructor
     initialize = function() {
         var panels = document.querySelectorAll("section.panel"),    
@@ -132,6 +136,13 @@ window.app = (function() {
         }
 
         bindEvents();
+
+        window.settings = window.settings || {};
+        window.settings.categories = [
+            'news',
+            'alerts',
+            'whatson'
+        ];
     };
 
     // Bind Event Listeners
@@ -141,12 +152,61 @@ window.app = (function() {
     bindEvents = function() {
 
         var btnToggle   = document.getElementById("btn-toggle-view"),
+            btnLogin   = document.getElementById("btn-login"),
             btnSettings = document.getElementById("btn-settings"),
             btnNews     = document.getElementById("btn-news"),
+            sliderDistance = document.getElementById("distance"),
+            footerTab = document.querySelectorAll("footer .tab-item"),
             btnAlerts   = document.getElementById("btn-alerts"),
-            btnOffers   = document.getElementById("btn-offers");
+            btnOffers   = document.getElementById("btn-offers"),
+            len,
+            clearFooterTabs;
 
         document.addEventListener('deviceready', onDeviceReady, false);
+
+        btnLogin.addEventListener("touchstart", function () {
+            togglePanel('login');
+            btnToggle.classList.toggle("hidden");
+            btnSettings.classList.toggle("hidden");
+            mapView.classList.toggle("hidden");
+        });
+        
+
+        clearFooterTabs = function (elem) {
+            btnNews.classList.remove("active");
+            btnAlerts.classList.remove("active");
+            btnOffers.classList.remove("active");
+        };
+        
+        btnNews.addEventListener("touchstart", function () {
+            clearFooterTabs();
+            btnNews.classList.toggle("active");
+            
+            if (window.settings.categories.indexOf("news") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("news"), 1);
+            } else {
+                window.settings.categories.push("news");
+            }
+
+        });
+        btnOffers.addEventListener("touchstart", function () {
+            clearFooterTabs();
+            btnOffers.classList.toggle("active");
+            if (window.settings.categories.indexOf("whatson") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("whatson"), 1);
+            } else {
+                window.settings.categories.push("whatson");
+            }
+        });
+        btnAlerts.addEventListener("touchstart", function () {
+            clearFooterTabs();
+            btnAlerts.classList.toggle("active");
+            if (window.settings.categories.indexOf("alerts") > -1 ) {
+                window.settings.categories.splice(window.settings.categories.indexOf("alerts"), 1);
+            } else {
+                window.settings.categories.push("alerts");
+            }
+        });
 
         btnToggle.addEventListener("touchstart", function (e) {
             e.preventDefault();
@@ -155,6 +215,7 @@ window.app = (function() {
         }, false);
 
         btnSettings.addEventListener("touchstart", function () {
+            
             togglePanel('settings');
 
             // highlight with color
@@ -162,6 +223,8 @@ window.app = (function() {
 
             // hide map view
             btnToggle.classList.toggle("hidden");
+            btnLogin.classList.toggle("hidden");
+            mapView.classList.toggle("hidden");
         }, false);
 
     };
@@ -329,7 +392,16 @@ var helpers = require("./helpers");
 
 module.exports = (function() {
 
-    var newMap;
+    var newMap,
+        pins = {
+            news: '',
+            rea: '',
+            twitter: '',
+            offers: '',
+            alerts: ''
+        };
+
+    window.settings = window.settings || {};
 
     newMap = function() {
 
@@ -358,7 +430,18 @@ module.exports = (function() {
                     }
                 });
 
+             // setup pins and styles
+            pins = {
+                rea: window.cordova.file.applicationDirectory + "www/img/pins/rea.png",
+                news: window.cordova.file.applicationDirectory + "www/img/pins/news.png",
+                alerts: window.cordova.file.applicationDirectory + "www/img/pins/alerts.png",
+                twitter: window.cordova.file.applicationDirectory + "www/img/pins/twitter.png",
+                whatson: window.cordova.file.applicationDirectory + "www/img/pins/whatson.png"
+            };
+
             markerExists = function (url) {
+                console.log("Hash code", helpers.hashCode(url));
+                console.log("markers", markers);
                 return !!markers[helpers.hashCode(url)] || false;
             };
 
@@ -366,34 +449,81 @@ module.exports = (function() {
 
             window.subscribe('data', function (data) {
                 
-                var len = data.length;
+                var len = data.length,
+                    correctPin,
+                    sources = {
+                        'news': true,
+                        'rea': true,
+                        'traffic': true,
+                        'twitter': true,
+                        'eventful': true,
+                        'shopping': true
+                    };
+
+                // check if category is green lit
+
+                if (window.settings.categories.indexOf("news") === -1) {
+                    sources.news = false;
+                    sources.rea = false;
+                    sources.twitter = false;
+                }
+                if (window.settings.categories.indexOf("alerts") === -1) {
+                    sources.traffic = false;
+                }
+                if (window.settings.categories.indexOf("whatson") === -1) {
+                    sources.eventful = false;
+                    sources.shopping = false;
+                }
                 
                 while (len--) {
 
                     // check if marker exists
+
                     if (markerExists(data[len].url)) {
                         console.log("marker exists");
                     } else {
-                        console.log("marker does not exist");
-                        map.addMarker({
-                            snippet: data[len].url,
-                            animation: plugin.google.maps.Animation.BOUNCE,
-                            title: data[len].headline,
-                            'position': new plugin.google.maps.LatLng(
-                                data[len].location[0].latitude,
-                                data[len].location[0].longitude
-                            ),
-                        }, function (marker) {
-                            markers[helpers.hashCode(marker.getSnippet())] = marker;
-                        });
+
+                        // check if source is enabled
+
+                        // get the right pin
+                        correctPin = data[len].originalSource.toLowerCase() || "";
+                        if (correctPin === "eventful") {
+                            correctPin = "whatson";
+                        }
+                        if (correctPin === "traffic") {
+                            correctPin = "alerts]";
+                        }
+                        if (correctPin === "shopping") {
+                            correctPin = "whatson";
+                        }
+
+                        if (sources[data[len].originalSource.toLowerCase()]) {
+                            map.addMarker({
+                                icon: pins[correctPin],
+                                snippet: data[len].url,
+                                animation: plugin.google.maps.Animation.BOUNCE,
+                                title: data[len].headline,
+                                'position': new plugin.google.maps.LatLng(
+                                    data[len].location[0].latitude,
+                                    data[len].location[0].longitude
+                                ),
+                            }, function (marker) {
+                                marker.addEventListener(plugin.google.maps.event.INFO_CLICK, function() {
+                                   window.open(marker.getSnippet(), "_new");
+                                });
+                                console.log("Saving marker to", helpers.hashCode(marker.getSnippet()));
+                                markers[helpers.hashCode(marker.getSnippet())] = [
+                                    marker,
+                                    sources[data[len].originalSource.toLowerCase()]
+                                ];
+                            });
+                        }
                     }
                 }
             });
 
             // Initialize the map view
             map.addEventListener(plugin.google.maps.event.MAP_READY, function() {
-
-                alert("map ready");
                 
                 map.getMyLocation(function(location) {
 
@@ -402,7 +532,7 @@ module.exports = (function() {
 
                     map.moveCamera({
                       'target': latLng,
-                      'zoom': 14
+                      'zoom': 16
                     });
                     
                 });
@@ -430,14 +560,15 @@ module.exports = (function () {
     var init,
         process,
         poll,
-        distance,
+        preProcess,
         getDistance,
         interval,
         get;
 
+    window.settings = window.settings || {};
     getDistance = function () {
         try {
-            return document.getElementById("distance").innerHTML;
+            return document.getElementById("distance").value;
         } catch (e) {
             console.error("distance value not found in html");
         }
@@ -455,15 +586,22 @@ module.exports = (function () {
     };
 
     init = function (lat, lng) {
-       // window.publish("update", [sampleData, lat, lng]);
         window.JSONP("http://foundry.thirdmurph.net:5000/?latlong="+lat+","+lng+"&dist=" + getDistance(), function (data) {
              window.publish("update", [data, lat, lng]);
         });
         poll(lat, lng);
     };
 
-    distance = function (data, lat, lng) {
+    preProcess = function (data, lat, lng) {
         data.forEach(function (value, index, arr) {
+
+            // normalise location
+            data[index].location = [{
+                latitude: value.location.latitude || value.location[0] && value.location[0].latitude,
+                longitude: value.location.longitude || value.location[0] && value.location[0].longitude,
+            }];
+
+            // calculate distance
             data[index].distance = helpers.distance(
                 value.location[0].latitude,
                 value.location[0].longitude,
@@ -471,6 +609,7 @@ module.exports = (function () {
                 lng,
                 "K"
             );
+
         });
         return data;
     };
@@ -487,8 +626,11 @@ module.exports = (function () {
     // update distance on location change
     // pass in users lat long
     window.subscribe('update', function (data, lat, lng) {
-        console.log("data", data);
-        window.publish('data', [distance(data.resultSet, lat, lng)]);
+      //  console.log("data", data);
+        setTimeout(function () {
+            window.publish('data', [preProcess(data.resultSet, lat, lng)]);
+        }, 0);
+        
     });
 }());
 },{"./helpers":1,"./sample":6}],6:[function(require,module,exports){

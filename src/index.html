@@ -33,9 +33,14 @@
     </head>
     <body>
         <header class="bar bar-nav">
-            <button id="btn-toggle-view" class="btn pull-left">List</button>
-            <a id="btn-settings" class="icon icon-gear pull-right"></a>
-            <h1 class="title">Map My Hood</h1>
+            <button id="btn-login" class="btn pull-left"><img src="img/login.svg" /></button>
+
+            <button id="btn-toggle-view" class="btn pull-left"><img src="img/list-view.svg" /></button>
+            <button id="btn-settings" class="btn pull-right"><img src="img/settings.svg" /></button>
+            <h1 class="title">
+                <img src="img/mapmynewslogo.svg" class="logo-image" />
+                <div class="logo-text">MapMyNews</div>
+            </h1>
         </header>
         
         <section class="panel panel-map">
@@ -45,49 +50,65 @@
             </div>
         </section>
 
+        <section class="panel panel-login hidden">
+            <img src="img/login-screen.jpg" width="100%" />
+        </section>
+
         <section id="settingsPanel" class="panel panel-settings hidden">
-            <span id="distance">5</span>
-            <div class="toggle active">
-                <div class="toggle-handle"></div>
-            </div>
-            <div class="toggle">
-                <div class="toggle-handle"></div>
-            </div>
-            <form>
-                <input type="search" placeholder="Search">
-                <button class="btn btn-positive btn-block">Set Location</button>
-            </form>
-            <div class="highlightPanel">
-                <h2>Trending</h2>
-                <ul>
-                    <li><img src="http://placehold.it/100x100"></li>
-                    <li><img src="http://placehold.it/100x100"></li>
-                    <li><img src="http://placehold.it/100x100"></li>
-                </ul>
-            </div>
-            <div class="highlightPanel">
-                <h2>Recommended</h2>
-                <ul>
-                    <li><img src="http://placehold.it/100x100"></li>
-                    <li><img src="http://placehold.it/100x100"></li>
-                    <li><img src="http://placehold.it/100x100"></li> 
-                </ul>               
-            </div>      
+            <ul class="table-view">
+                 <li class="table-view-cell table-view-divider">PROXIMITY</li>
+                <li class="table-view-cell distance-slider">
+                    <input id="distance" type ="range" class="slider" value="5" min ="1" max="10" step ="1" />
+                    <div class="indicators"><span>1km</span><span>5km</span><span>10km</span></div>
+                    <p>Proximity is based around your current location</p>
+                </li>
+                 <li class="table-view-cell table-view-divider"></li>
+                <li class="table-view-cell">
+                     <a class="navigate-right">
+                      <div class="media-body">
+                        Content preferences
+                      </div>
+                    </a>
+                </li>
+                 <li class="table-view-cell table-view-divider"></li>
+                <li class="table-view-cell">
+                    <a class="navigate-right">
+                      <div class="media-body">
+                        Alerts
+                      </div>
+                    </a>
+                </li>
+                 <li class="table-view-cell table-view-divider"></li>
+                <li class="table-view-cell"> <a class="navigate-right">
+                      <div class="media-body">
+                        Help
+                      </div>
+                    </a></li>
+                <li class="table-view-cell"> <a class="navigate-right">
+                      <div class="media-body">
+                        About
+                      </div>
+                    </a></li>
+            </ul>
         </section>    
 
         <footer>
             <nav class="bar bar-tab">
-                <a class="tab-item active" href="#" id="btn-news">
-                    <span class="icon icon-pages"></span>
+                <a class="tab-item" href="#" id="btn-search">
+                    <span class="icon active"><img src="img/search.svg" /></span>
+                    <span class="tab-label">Search</span>
+                </a>
+                <a class="tab-item" href="#" id="btn-news">
+                     <span class="icon"><img src="img/news.svg" /></span>
                     <span class="tab-label">News</span>
                 </a>
                 <a class="tab-item" href="#" id="btn-alerts">
-                    <span class="icon icon-info"></span>
+                     <span class="icon"><img src="img/alerts.svg" /></span>
                     <span class="tab-label">Alerts</span>
                 </a>
                 <a class="tab-item" href="#" id="btn-offers">
-                    <span class="icon icon-star"></span>
-                    <span class="tab-label">Offers</span>
+                    <span class="icon"><img src="img/whatson.svg" /></span>
+                    <span class="tab-label">What's On</span>
                 </a>
             </nav>
         </footer>
