@@ -314,7 +314,7 @@ $res2->{'resultSize'} = scalar @resset;
 
 #print "Hash: " . Dumper($res2) . "\n";
 
-return (to_json($res2));
+return (to_json($res2, {utf8 => 1}));
 
 }
 
@@ -353,7 +353,7 @@ sub cache_get {
   my $filename = "$source-$lat-$long.storable";
 
   # Cache expiry set to 1 hour
-  if (-e $filename && stat($filename)->mtime >= (time() - 3600)) {
+  if (-e $filename && (stat($filename))[9] >= (time() - 3600)) {
     $arrayref = retrieve($filename);
   }
   return $arrayref;
