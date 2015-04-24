@@ -314,7 +314,7 @@ sub getContent {
 
         my $eventImage;
         if ($event->{image}->{medium}->{url}) {
-            $eventIm  age = {
+            $eventImage = {
               uri => $event->{image}->{medium}->{url},
               width => $event->{image}->{medium}->{width},
               height => $event->{image}->{medium}->{height}
